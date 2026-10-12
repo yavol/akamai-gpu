@@ -22,7 +22,9 @@ Open `http://localhost:8080/` on the server host. On a remote pod, use its authe
 
 Use `.env.example` as a configuration reference; this application reads the process environment and does not automatically load `.env` files. OpenRouter is optional for a GPU-only deployment. A managed cloud environment’s injected credential placeholders are not portable secrets: supply a valid OpenRouter key separately to enable hosted comparisons on another host. The adapter uses the host’s configured proxy and CA trust. Keep the demo behind the workshop’s authenticated ingress when deploying; the Python server itself does not implement login.
 
-[Workshop deployment tools](deploy/README.md) are included as experimental options. Their source tests pass, but public deployment has not been verified end to end and no public demo URL is confirmed. Workshop network routing restricted the deployment attempts; the saved browser results below cover the earlier OpenRouter demos, not a successful public GPU deployment.
+Optionally start with `python server.py --credentials-file /private/directory/credentials.json`. The file must contain a flat JSON object with only `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, and/or `GPU_API_KEY` string values. It must be a regular, non-symlink file owned by the current user with permissions `0600`; its immediate directory must belong to that user with permissions `0700`. Keep it outside the repository, app assets, and Jupyter's served file tree. Valid values override matching process variables at startup; unknown or duplicate keys are rejected without loading any values. No credential contents are printed. The current hosted models use OpenRouter, so `OPENAI_API_KEY` alone does not enable them.
+
+[Workshop deployment tools](deploy/README.md) are included as experimental options. Their source tests pass, but public deployment has not been verified end to end and no public demo URL is confirmed. Workshop network routing restricted the deployment attempts. Saved OpenRouter runs and live GPU checks through a private notebook bridge are labeled separately below; neither establishes a public GPU deployment.
 
 ## Model switching
 
@@ -51,7 +53,11 @@ GPU_MODEL_LABEL=Akamai GPU · Clef FP8
 GPU_API_KEY=<optional server-side credential>
 ```
 
-`GPU_DECISIONS_URL` is the complete endpoint URL, not a base URL. SGLang exposes the native decision route at `/v1/systemone`. Use an address reachable from the Python server (loopback when inference is colocated). `GPU_MODEL_ID` must match the model server’s served model name; a container image tag is not a model ID. The workshop service reports `Cloudflare/clef-flash` and runs FP8 inference. The GPU option activates when its endpoint is configured. Readiness in the menu means configuration is present, not that the upstream service has passed a health check. The endpoint receives:
+`GPU_DECISIONS_URL` is the complete endpoint URL, not a base URL. SGLang exposes the native decision route at `/v1/systemone`. Use an address reachable from the Python server (loopback when inference is colocated). `GPU_MODEL_ID` must match the model server’s served model name; a container image tag is not a model ID. The workshop service reports `Cloudflare/clef-flash` and runs FP8 inference. The GPU option activates when its endpoint is configured. Readiness in the menu means configuration is present, not that the upstream service has passed a health check.
+
+For GPU image observations, the adapter joins text parts into `state` and sends validated image data URLs in SGLang's separate top-level `images` array. SGLang treats objects embedded in `state` as JSON text, so placing OpenRouter image parts there would not invoke vision processing. OpenRouter providers retain their own image-part format.
+
+Text requests use this shape:
 
 ```json
 {
@@ -67,7 +73,7 @@ GPU_API_KEY=<optional server-side credential>
 }
 ```
 
-Return `{"answers":{"color":{"choice":"red","confidence":0.98,"probabilities":{"red":0.98,"blue":0.02}}}}`. Optional `model`, `usage`, and `id` metadata is preserved. For images, `state` is an array containing strings and `{ "type":"image_url", "image_url":{"url":"data:image/png;base64,..."} }` parts. Confidence/probabilities can be omitted if unsupported. The current SGLang service does not report inference-only timing; the app reports measured request wall time and does not infer GPU forward-pass latency from it. The GPU model ID and requested ID are preserved in live exports, independent of the hosted-provider benchmarks below.
+Return `{"answers":{"color":{"choice":"red","confidence":0.98,"probabilities":{"red":0.98,"blue":0.02}}}}`. Optional `model`, `usage`, and `id` metadata is preserved. The browser-to-demo API accepts a `state` array containing strings and `{ "type":"image_url", "image_url":{"url":"data:image/png;base64,..."} }` parts. For self-hosted SGLang, the adapter converts this into a text `state` and a separate top-level `images` array; OpenRouter keeps its image-part format. Confidence/probabilities can be omitted if unsupported. The current SGLang service does not report inference-only timing; the app reports measured request wall time and does not infer GPU forward-pass latency from it. The GPU model ID and requested ID are preserved in live exports, independent of the hosted-provider benchmarks below.
 
 ## Measurement and verification
 
@@ -108,6 +114,36 @@ The saved 54-request frozen-text run through OpenRouter passed all 18 observatio
 Final live browser tests passed all four support and procurement cases for Clef and Luna. JEV passed all four procurement cases and all 10 courier moves (five checkpoints). Clef's image-mode courier passed all 10 moves in 5.63 seconds. An earlier Luna game run reached only two checkpoints before the 18-move cap; the UI now explicitly marks this outcome incomplete. Initial Clef business misses and the subsequent shared policy clarifications remain visible in the historical evidence.
 
 Chromium also verified desktop/mobile layout, real form population, model and observation selectors, repeated stopping/restarting, JSON export, and a mocked failure path for the move cap. The mocked failure-path test is excluded from live benchmark results. The historical verification also passed the original fifteen backend unit tests; run the test command above for the current adapter suite. See `evidence/browser-qa-final.json` and `evidence/browser-final-export.json`.
+
+### Frozen text baseline with self-hosted GPU
+
+The [GPU frozen benchmark](evidence/gpu-frozen-benchmark.json) replayed the same six saved text observations three times: all 18 observations and 30 named questions passed. Each hosted model's earlier run also passed all 18 observations and 30 questions.
+
+| Model and measured route | p50 request | p95 request |
+|---|---:|---:|
+| Self-hosted Clef, Akamai app to GPU | 98.00 ms | 112.41 ms |
+| Clef Flash, historical OpenRouter | 435 ms | 606 ms |
+| JEV 1.13, historical OpenRouter | 314 ms | 349 ms |
+| GPT-6 Luna chat, historical OpenRouter | 1,162 ms | 2,211 ms |
+
+Inputs and scoring match, but execution time and network path differ: GPU requests ran from the remote Akamai app, while hosted requests used the earlier cloud-to-OpenRouter path. This is not a controlled latency comparison or an inference-only speedup claim. Upstream caching was not controlled. The UI's saved benchmark remains the clearly labeled historical OpenRouter run.
+
+### Saved self-hosted GPU checks — October 12, 2026
+
+Local headless Chromium drove the static UI and sent API calls through an authenticated Jupyter bridge to the live Akamai app and GPU. Provider latency was measured by the remote app around actual GPU requests. Browser task times include bridge transport and local rendering; these are not public deployment latency measurements.
+
+| Demo | Observation | Recorded outcome | p50 provider request |
+|---|---|---|---:|
+| Courier | Text | 5/5 checkpoints; 10/10 optimal moves | 62.69 ms |
+| Support intake | Text | 4/4 correct cases | 112.16 ms |
+| Procurement | Text | 4/4 correct cases | 98.36 ms |
+| Courier | Image | 5/5 checkpoints; 11/12 optimal moves | 137.02 ms |
+| Support intake | Image | 4/4 correct cases | 315.75 ms |
+| Procurement | Image | 3/4 correct cases; **needs review** | 408.07 ms |
+
+The [final full browser suite](evidence/gpu-final-browser.json) completed its catalog, task, mobile-layout, and export checks. Support image results come from the [native-contract business run](evidence/gpu-native-vision-browser.json); that source revision predates a procurement-only image-layout change, with support unchanged. The [revised procurement image run](evidence/gpu-table-browser.json) still failed one case. Its UI and export retain **needs review** and a failure outcome; it should not be treated as validated automatic purchasing.
+
+These small, illustrative runs are not a controlled, identical-observation latency comparison against the historical OpenRouter models. Provider timings exclude the browser-to-app bridge but include app-to-GPU transport and response validation. Upstream caching was not controlled. The earlier [native-contract courier run](evidence/gpu-native-browser.json), at 200.90 ms image p50, is retained alongside the later 137.02 ms result. Its harness stopped on an overly strict optimal-move assertion, so the original missing `complete` flag remains missing and `testsCompleted` is false despite checkpoint completion. `gpu-initial-*` evidence preserves earlier image-contract failures: images were incorrectly sent inside `state`, so those image results are not valid vision benchmarks. Each published GPU browser JSON includes source SHA, original artifact SHA, transport methodology, and harness completion status.
 
 ## Research references
 

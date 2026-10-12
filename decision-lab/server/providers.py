@@ -289,6 +289,14 @@ def execute_decision(provider: str, state: Any, questions: Any, timeout: float =
             raise ProviderError("OPENROUTER_API_KEY is not configured on the server", 503, "not_configured")
         url = OPENROUTER + ("/api/v1/chat/completions" if kind == "chat" else "/api/alpha/decisions")
     payload = {"model": model, "state": clean_state, "questions": clean_questions}
+    if provider == "gpu" and isinstance(clean_state, list):
+        # SGLang /v1/systemone renders state as text/JSON. Its multimodal
+        # processor reads only the separate top-level images array; embedding
+        # OpenRouter image parts in state would tokenize the base64 as text.
+        payload["state"] = "\n\n".join(part for part in clean_state if isinstance(part, str))
+        images = [part["image_url"]["url"] for part in clean_state if isinstance(part, dict)]
+        if images:
+            payload["images"] = images
     if provider == "clef":
         # PrimeIntellect accepted images but failed repeated color sanity checks.
         # Pin the provider that passed; do not silently fail over on visual tasks.

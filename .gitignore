@@ -9,3 +9,5 @@ deploy-state*.json
 *.private.json
 .deploy-ack
 *.log
+credentials.json
+deploy-credentials.json

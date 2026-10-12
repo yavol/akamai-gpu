@@ -14,7 +14,7 @@ python decision-lab/server.py --port 8080
 
 Configure `GPU_DECISIONS_URL` and/or `OPENROUTER_API_KEY` privately in the server environment. The frontend enables configured backends, shows setup reasons for unavailable models, and records actual model choices and request latency. Source, automated tests, synthetic benchmark evidence, and [workshop deployment tooling](decision-lab/deploy/README.md) are included. No API keys or model weights are bundled.
 
-The deployment tooling is experimental and depends on the workshop's ingress and network policies. No public demo deployment or URL has been confirmed; saved benchmark evidence records the earlier OpenRouter runs.
+The deployment tooling is experimental and depends on the workshop's ingress and network policies. No public demo deployment or URL has been confirmed. Saved evidence distinguishes earlier OpenRouter runs from live GPU checks through a private notebook bridge; browser task times from that bridge do not measure public deployment latency.
 
 ## Setup
 

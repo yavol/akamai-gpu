@@ -9,3 +9,5 @@ node_modules/
 deploy-state*.json
 *.private.json
 .deploy-ack
+credentials.json
+deploy-credentials.json

@@ -1,0 +1,1937 @@
+{
+  "startedAt": "2026-10-12T22:28:13.167Z",
+  "deployment": "Authenticated workshop GPU",
+  "runs": [
+    {
+      "id": "aa877e85-103a-49be-99d0-f14f195e9354",
+      "kind": "courier",
+      "provider": "gpu",
+      "label": "Akamai GPU \u00b7 Clef FP8",
+      "mode": "text",
+      "seed": 42,
+      "round": 1,
+      "startedAt": "2026-10-12T22:28:14.139Z",
+      "calls": [
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.9557668223958411,
+              "probabilities": {
+                "up": 0.022116588802079524,
+                "left": 0.9778834111979205
+              }
+            }
+          },
+          "latencyMs": 62.39,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 333,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 61.93,
+            "headersMs": 61.88,
+            "bodyMs": 0.05,
+            "totalMs": 62.39,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 186.3999999994412,
+          "step": 1,
+          "correct": true,
+          "detail": "Moved left \u00b7 on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "A",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.9443101785727475,
+              "probabilities": {
+                "up": 0.020298500034326167,
+                "right": 0.01682804758384225,
+                "left": 0.9628734523818316
+              }
+            }
+          },
+          "latencyMs": 61.08,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.87,
+            "headersMs": 60.82,
+            "bodyMs": 0.05,
+            "totalMs": 61.08,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 187.40000000037253,
+          "step": 2,
+          "correct": true,
+          "detail": "Checkpoint A collected",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "A",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.9126348489073313,
+              "probabilities": {
+                "up": 0.9417565659382207,
+                "right": 0.022851044297845444,
+                "left": 0.03539238976393377
+              }
+            }
+          },
+          "latencyMs": 61.13,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.94,
+            "headersMs": 60.89,
+            "bodyMs": 0.05,
+            "totalMs": 61.13,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 187.29999999981374,
+          "step": 3,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "B",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.8749010161729294,
+              "probabilities": {
+                "up": 0.9166006774486196,
+                "right": 0.028781545806797145,
+                "down": 0.05461777674458329
+              }
+            }
+          },
+          "latencyMs": 60.95,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.73,
+            "headersMs": 60.68,
+            "bodyMs": 0.05,
+            "totalMs": 60.95,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 186.59999999962747,
+          "step": 4,
+          "correct": true,
+          "detail": "Checkpoint B collected",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "B",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.8542023359428397,
+              "probabilities": {
+                "up": 0.05464268041131831,
+                "down": 0.042555762293455215,
+                "left": 0.9028015572952265
+              }
+            }
+          },
+          "latencyMs": 60.94,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.73,
+            "headersMs": 60.67,
+            "bodyMs": 0.06,
+            "totalMs": 60.94,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 184.59999999962747,
+          "step": 5,
+          "correct": true,
+          "detail": "Moved left \u00b7 on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 5,
+            "task": "C",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.9404798121080715,
+              "probabilities": {
+                "right": 0.029760093945964218,
+                "left": 0.9702399060540357
+              }
+            }
+          },
+          "latencyMs": 59.88,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 333,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 59.68,
+            "headersMs": 59.63,
+            "bodyMs": 0.05,
+            "totalMs": 59.88,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 182.80000000074506,
+          "step": 6,
+          "correct": true,
+          "detail": "Checkpoint C collected",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 6,
+            "task": "C",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.9226875011559683,
+              "probabilities": {
+                "up": 0.9484583341039788,
+                "right": 0.019839013150311943,
+                "down": 0.03170265274570926
+              }
+            }
+          },
+          "latencyMs": 60.71,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.51,
+            "headersMs": 60.45,
+            "bodyMs": 0.05,
+            "totalMs": 60.71,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 187,
+          "step": 7,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 7,
+            "task": "D",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.9430816967875262,
+              "probabilities": {
+                "up": 0.9620544645250174,
+                "down": 0.023897134706507304,
+                "left": 0.01404840076847513
+              }
+            }
+          },
+          "latencyMs": 60.71,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 60.52,
+            "headersMs": 60.47,
+            "bodyMs": 0.05,
+            "totalMs": 60.71,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 183,
+          "step": 8,
+          "correct": true,
+          "detail": "Checkpoint D collected",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 8,
+            "task": "D",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.9395708258652122,
+              "probabilities": {
+                "down": 0.03021458706739398,
+                "left": 0.9697854129326061
+              }
+            }
+          },
+          "latencyMs": 60.02,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 335,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 59.8,
+            "headersMs": 59.74,
+            "bodyMs": 0.06,
+            "totalMs": 60.02,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 182.70000000018626,
+          "step": 9,
+          "correct": true,
+          "detail": "Moved left \u00b7 on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 9,
+            "task": "\u2302",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.9583115330297383,
+              "probabilities": {
+                "right": 0.01195478902257775,
+                "down": 0.015837522290930158,
+                "left": 0.972207688686492
+              }
+            }
+          },
+          "latencyMs": 61.25,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 354,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 61.03,
+            "headersMs": 60.97,
+            "bodyMs": 0.06,
+            "totalMs": 61.25,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 186.70000000018626,
+          "step": 10,
+          "correct": true,
+          "detail": "All parcels delivered",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 10,
+            "task": "\u2302",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 10,
+      "correct": 10,
+      "status": "complete",
+      "model": "Cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 5,
+        "total": 5,
+        "completedTasks": 5,
+        "score": 10,
+        "decisions": 10,
+        "maxDecisions": 18
+      },
+      "outcome": "success",
+      "totalMs": 1976.5999999996275,
+      "finishedAt": "2026-10-12T22:28:16.116Z",
+      "p50": 60.94,
+      "p95": 62.39
+    },
+    {
+      "id": "19502206-259f-43ce-8dbd-31f2815d0ddd",
+      "kind": "intake",
+      "provider": "gpu",
+      "label": "Akamai GPU \u00b7 Clef FP8",
+      "mode": "text",
+      "seed": 42,
+      "round": 2,
+      "startedAt": "2026-10-12T22:28:16.426Z",
+      "calls": [
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Billing",
+              "confidence": 0.9712260027880196,
+              "probabilities": {
+                "Billing": 0.9784195020910146,
+                "Technical support": 0.0060496536157596936,
+                "Security": 0.009667318951761388,
+                "Account access": 0.0058635253414642775
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": 0.7179822250901253,
+              "probabilities": {
+                "Normal": 0.8119881500600836,
+                "High": 0.09253720191534545,
+                "Critical": 0.09547464802457101
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Resolve with policy",
+              "confidence": 0.9457768042478145,
+              "probabilities": {
+                "Resolve with policy": 0.9638512028318764,
+                "Request details": 0.0183567880813957,
+                "Escalate": 0.01779200908672796
+              }
+            }
+          },
+          "latencyMs": 112.54,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 745,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 112.31,
+            "headersMs": 112.25,
+            "bodyMs": 0.06,
+            "totalMs": 112.54,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 248.5,
+          "step": 1,
+          "correct": true,
+          "detail": "TK-1042: Billing \u00b7 Normal \u00b7 Resolve with policy",
+          "expected": {
+            "team": "Billing",
+            "urgency": "Normal",
+            "disposition": "Resolve with policy"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "TK-1042",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": 0.9238645655191511,
+              "probabilities": {
+                "Billing": 0.018098581430210574,
+                "Technical support": 0.9428984241393632,
+                "Security": 0.016478945918487004,
+                "Account access": 0.022524048511939114
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": 0.9023373746421588,
+              "probabilities": {
+                "Normal": 0.9348915830947726,
+                "High": 0.03858758407561322,
+                "Critical": 0.026520832829614212
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Request details",
+              "confidence": 0.9461910174845614,
+              "probabilities": {
+                "Resolve with policy": 0.020166763671169586,
+                "Request details": 0.9641273449897075,
+                "Escalate": 0.015705891339122834
+              }
+            }
+          },
+          "latencyMs": 111.21,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 736,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 110.98,
+            "headersMs": 110.92,
+            "bodyMs": 0.06,
+            "totalMs": 111.21,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 246.59999999962747,
+          "step": 2,
+          "correct": true,
+          "detail": "TK-1045: Technical support \u00b7 Normal \u00b7 Request details",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "Normal",
+            "disposition": "Request details"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "TK-1045",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Security",
+              "confidence": 0.9614587085180126,
+              "probabilities": {
+                "Billing": 0.00991886925435476,
+                "Technical support": 0.00875337139410965,
+                "Security": 0.9710940313885095,
+                "Account access": 0.010233727963026065
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Critical",
+              "confidence": 0.8755204225957114,
+              "probabilities": {
+                "Normal": 0.03697288549523682,
+                "High": 0.04601349944095563,
+                "Critical": 0.9170136150638076
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": 0.9056235869916487,
+              "probabilities": {
+                "Resolve with policy": 0.036334627396789845,
+                "Request details": 0.026582981275444284,
+                "Escalate": 0.9370823913277658
+              }
+            }
+          },
+          "latencyMs": 112.06,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 744,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 111.81,
+            "headersMs": 111.75,
+            "bodyMs": 0.06,
+            "totalMs": 112.06,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 247.30000000074506,
+          "step": 3,
+          "correct": true,
+          "detail": "TK-1043: Security \u00b7 Critical \u00b7 Escalate",
+          "expected": {
+            "team": "Security",
+            "urgency": "Critical",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "TK-1043",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": 0.9011991763235052,
+              "probabilities": {
+                "Billing": 0.008695423217259917,
+                "Technical support": 0.9258993822426289,
+                "Security": 0.027633997834120638,
+                "Account access": 0.0377711967059906
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "High",
+              "confidence": 0.9625261084123722,
+              "probabilities": {
+                "Normal": 0.013270988312093276,
+                "High": 0.9750174056082481,
+                "Critical": 0.011711606079658685
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": 0.8575994169369423,
+              "probabilities": {
+                "Resolve with policy": 0.042662515448016865,
+                "Request details": 0.05227120659402155,
+                "Escalate": 0.9050662779579616
+              }
+            }
+          },
+          "latencyMs": 111.62,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 749,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 111.36,
+            "headersMs": 111.3,
+            "bodyMs": 0.06,
+            "totalMs": 111.62,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 246.90000000037253,
+          "step": 4,
+          "correct": true,
+          "detail": "TK-1044: Technical support \u00b7 High \u00b7 Escalate",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "High",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "TK-1044",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "Cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 1025.0999999996275,
+      "finishedAt": "2026-10-12T22:28:17.451Z",
+      "p50": 111.62,
+      "p95": 112.54
+    },
+    {
+      "id": "211ec116-a54b-4459-be26-42e18275e920",
+      "kind": "procurement",
+      "provider": "gpu",
+      "label": "Akamai GPU \u00b7 Clef FP8",
+      "mode": "text",
+      "seed": 42,
+      "round": 3,
+      "startedAt": "2026-10-12T22:28:17.740Z",
+      "calls": [
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 0.6533269566156323,
+              "probabilities": {
+                "Harbor Office": 0.15378660233390049,
+                "Summit Works": 0.07732875992234477,
+                "Northstar Supply": 0.7688846377437548
+              }
+            }
+          },
+          "latencyMs": 97.89,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 637,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 97.69,
+            "headersMs": 97.63,
+            "bodyMs": 0.07,
+            "totalMs": 97.89,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 226.70000000018626,
+          "step": 1,
+          "correct": true,
+          "detail": "Northstar Supply \u00b7 NS-MX24 \u00b7 $306",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "PR-210",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 0.4821949002816325,
+              "probabilities": {
+                "Harbor Office": 0.27725832514251014,
+                "Summit Works": 0.0679450746697349,
+                "Northstar Supply": 0.654796600187755
+              }
+            }
+          },
+          "latencyMs": 98.01,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 638,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 97.78,
+            "headersMs": 97.72,
+            "bodyMs": 0.06,
+            "totalMs": 98.01,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 225.5,
+          "step": 2,
+          "correct": true,
+          "detail": "Northstar Supply \u00b7 NS-W55 \u00b7 $565",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "PR-213",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": 0.7381937378862364,
+              "probabilities": {
+                "Summit Works": 0.09407278823352012,
+                "Harbor Office": 0.8254624919241579,
+                "Northstar Supply": 0.08046471984232212
+              }
+            }
+          },
+          "latencyMs": 96.7,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 630,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 96.5,
+            "headersMs": 96.44,
+            "bodyMs": 0.06,
+            "totalMs": 96.7,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 224.5,
+          "step": 3,
+          "correct": true,
+          "detail": "Harbor Office \u00b7 HO-D89 \u00b7 $728",
+          "expected": {
+            "supplier": "Harbor Office"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "PR-211",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Summit Works",
+              "confidence": 0.7677835983631698,
+              "probabilities": {
+                "Summit Works": 0.8451890655754466,
+                "Harbor Office": 0.07861482922093814,
+                "Northstar Supply": 0.07619610520361528
+              }
+            }
+          },
+          "latencyMs": 100.11,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 647,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 99.88,
+            "headersMs": 99.81,
+            "bodyMs": 0.06,
+            "totalMs": 100.11,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 228,
+          "step": 4,
+          "correct": true,
+          "detail": "Summit Works \u00b7 SW-H46 \u00b7 $944",
+          "expected": {
+            "supplier": "Summit Works"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "PR-212",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "Cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 942.7000000001863,
+      "finishedAt": "2026-10-12T22:28:18.683Z",
+      "p50": 97.89,
+      "p95": 100.11
+    },
+    {
+      "id": "98f64f35-5cbd-4ee8-9aa0-e61125e50edf",
+      "kind": "courier",
+      "provider": "gpu",
+      "label": "Akamai GPU \u00b7 Clef FP8",
+      "mode": "vision",
+      "seed": 42,
+      "round": 4,
+      "startedAt": "2026-10-12T22:28:18.933Z",
+      "calls": [
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.0078123410581609765,
+              "probabilities": {
+                "up": 0.4960938294709195,
+                "left": 0.5039061705290805
+              }
+            }
+          },
+          "latencyMs": 680.24,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 679.41,
+            "headersMs": 679.36,
+            "bodyMs": 0.05,
+            "totalMs": 680.24,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 1106.0999999996275,
+          "step": 1,
+          "correct": true,
+          "detail": "Moved left \u00b7 on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "A",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.029954049678276085,
+              "probabilities": {
+                "up": 0.34918659865738483,
+                "right": 0.2975107015570978,
+                "left": 0.35330269978551737
+              }
+            }
+          },
+          "latencyMs": 700.25,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.69,
+            "headersMs": 699.63,
+            "bodyMs": 0.06,
+            "totalMs": 700.25,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 920.0999999996275,
+          "step": 2,
+          "correct": true,
+          "detail": "Checkpoint A collected",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "A",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.061022991832824225,
+              "probabilities": {
+                "up": 0.3740153278885495,
+                "right": 0.2867674992302992,
+                "left": 0.3392171728811512
+              }
+            }
+          },
+          "latencyMs": 696.14,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 695.66,
+            "headersMs": 695.59,
+            "bodyMs": 0.07,
+            "totalMs": 696.14,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 906.8999999994412,
+          "step": 3,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "right",
+              "confidence": 0.040120599929695966,
+              "probabilities": {
+                "up": 0.30559626633212766,
+                "right": 0.3600803999531306,
+                "down": 0.33432333371474166
+              }
+            }
+          },
+          "latencyMs": 699.84,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.15,
+            "headersMs": 699.09,
+            "bodyMs": 0.06,
+            "totalMs": 699.84,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 904.7000000001863,
+          "step": 4,
+          "correct": false,
+          "detail": "Moved right \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "down",
+              "confidence": 0.024826973529660012,
+              "probabilities": {
+                "right": 0.3136345723718978,
+                "down": 0.34988464901977334,
+                "left": 0.3364807786083289
+              }
+            }
+          },
+          "latencyMs": 698.4,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 697.83,
+            "headersMs": 697.77,
+            "bodyMs": 0.06,
+            "totalMs": 698.4,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 904.5,
+          "step": 5,
+          "correct": false,
+          "detail": "Moved down \u00b7 detour",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 5,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.047590504444180115,
+              "probabilities": {
+                "up": 0.36506033629612006,
+                "right": 0.29333422097245243,
+                "left": 0.3416054427314276
+              }
+            }
+          },
+          "latencyMs": 700.55,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.99,
+            "headersMs": 699.91,
+            "bodyMs": 0.08,
+            "totalMs": 700.55,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 906,
+          "step": 6,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up",
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 6,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.015536054216184203,
+              "probabilities": {
+                "right": 0.3166227123498572,
+                "down": 0.3396865848393532,
+                "left": 0.3436907028107895
+              }
+            }
+          },
+          "latencyMs": 699.21,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 698.64,
+            "headersMs": 698.58,
+            "bodyMs": 0.06,
+            "totalMs": 699.21,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 904.5999999996275,
+          "step": 7,
+          "correct": true,
+          "detail": "Moved left \u00b7 on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 7,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "down",
+              "confidence": 0.027391389558606427,
+              "probabilities": {
+                "up": 0.31028084515683735,
+                "right": 0.338124895137425,
+                "down": 0.35159425970573766
+              }
+            }
+          },
+          "latencyMs": 700.16,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.63,
+            "headersMs": 699.58,
+            "bodyMs": 0.05,
+            "totalMs": 700.16,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 905,
+          "step": 8,
+          "correct": false,
+          "detail": "Moved down \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 8,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.03991511184429153,
+              "probabilities": {
+                "up": 0.33813553925128415,
+                "right": 0.30192105285252147,
+                "left": 0.35994340789619433
+              }
+            }
+          },
+          "latencyMs": 682.89,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 682.17,
+            "headersMs": 682.1,
+            "bodyMs": 0.07,
+            "totalMs": 682.89,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 890,
+          "step": 9,
+          "correct": false,
+          "detail": "Moved left \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 9,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.019528766852032087,
+              "probabilities": {
+                "right": 0.49023561657398396,
+                "left": 0.5097643834260159
+              }
+            }
+          },
+          "latencyMs": 700.49,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.74,
+            "headersMs": 699.69,
+            "bodyMs": 0.06,
+            "totalMs": 700.49,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 907.5,
+          "step": 10,
+          "correct": false,
+          "detail": "Moved left \u00b7 detour",
+          "expected": {
+            "direction": [
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 10,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.037393334309112625,
+              "probabilities": {
+                "up": 0.35826222287274173,
+                "right": 0.29585188317425337,
+                "left": 0.34588589395300484
+              }
+            }
+          },
+          "latencyMs": 700.01,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 699.41,
+            "headersMs": 699.35,
+            "bodyMs": 0.06,
+            "totalMs": 700.01,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 906.2000000001863,
+          "step": 11,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up",
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 11,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "down",
+              "confidence": 0.06436402255204654,
+              "probabilities": {
+                "up": 0.4678179887239768,
+                "down": 0.5321820112760233
+              }
+            }
+          },
+          "latencyMs": 695.28,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 694.72,
+            "headersMs": 694.51,
+            "bodyMs": 0.21,
+            "totalMs": 695.28,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 900.3000000007451,
+          "step": 12,
+          "correct": false,
+          "detail": "Moved down \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 12,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.03532124057010211,
+              "probabilities": {
+                "up": 0.35688082704673474,
+                "right": 0.29586459734204645,
+                "left": 0.34725457561121875
+              }
+            }
+          },
+          "latencyMs": 701.87,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 701.31,
+            "headersMs": 701.25,
+            "bodyMs": 0.06,
+            "totalMs": 701.87,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 908.0999999996275,
+          "step": 13,
+          "correct": true,
+          "detail": "Moved up \u00b7 on route",
+          "expected": {
+            "direction": [
+              "up",
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 13,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "down",
+              "confidence": 0.09928123494212371,
+              "probabilities": {
+                "up": 0.45035938252893815,
+                "down": 0.5496406174710619
+              }
+            }
+          },
+          "latencyMs": 683.36,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 682.56,
+            "headersMs": 682.49,
+            "bodyMs": 0.07,
+            "totalMs": 683.36,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 891.1000000005588,
+          "step": 14,
+          "correct": false,
+          "detail": "Moved down \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 14,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.03198383771711666,
+              "probabilities": {
+                "up": 0.3384150160916957,
+                "right": 0.30692909209689323,
+                "left": 0.3546558918114111
+              }
+            }
+          },
+          "latencyMs": 701.34,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 700.77,
+            "headersMs": 700.72,
+            "bodyMs": 0.05,
+            "totalMs": 701.34,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 907.0999999996275,
+          "step": 15,
+          "correct": false,
+          "detail": "Moved left \u00b7 detour",
+          "expected": {
+            "direction": [
+              "up",
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 15,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.04684069787264811,
+              "probabilities": {
+                "right": 0.47657965106367595,
+                "left": 0.523420348936324
+              }
+            }
+          },
+          "latencyMs": 700.84,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 700.28,
+            "headersMs": 700.18,
+            "bodyMs": 0.09,
+            "totalMs": 700.84,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 905.5999999996275,
+          "step": 16,
+          "correct": false,
+          "detail": "Moved left \u00b7 detour",
+          "expected": {
+            "direction": [
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 16,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "right",
+              "confidence": 0.07408277351236836,
+              "probabilities": {
+                "up": 0.4629586132438158,
+                "right": 0.5370413867561842
+              }
+            }
+          },
+          "latencyMs": 702.08,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 701.51,
+            "headersMs": 701.44,
+            "bodyMs": 0.06,
+            "totalMs": 702.08,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 907.2000000001863,
+          "step": 17,
+          "correct": true,
+          "detail": "Moved right \u00b7 on route",
+          "expected": {
+            "direction": [
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 17,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.03904264390418599,
+              "probabilities": {
+                "right": 0.480478678047907,
+                "left": 0.5195213219520929
+              }
+            }
+          },
+          "latencyMs": 702.77,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 4089,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 702.19,
+            "headersMs": 702.14,
+            "bodyMs": 0.06,
+            "totalMs": 702.77,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 907.7999999998137,
+          "step": 18,
+          "correct": false,
+          "detail": "18-decision limit reached",
+          "expected": {
+            "direction": [
+              "right"
+            ]
+          },
+          "observationMeta": {
+            "step": 18,
+            "task": "B",
+            "inputMode": "vision"
+          }
+        }
+      ],
+      "completed": 18,
+      "correct": 8,
+      "status": "incomplete",
+      "model": "Cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 1,
+        "total": 5,
+        "completedTasks": 1,
+        "score": 8,
+        "decisions": 18,
+        "maxDecisions": 18
+      },
+      "outcome": "failure",
+      "totalMs": 16681.699999999255,
+      "finishedAt": "2026-10-12T22:28:35.615Z",
+      "p50": 700.01,
+      "p95": 702.77
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "Configured GPU is selected by default"
+  ],
+  "finishedAt": "2026-10-12T22:28:35.771Z",
+  "evidenceContext": {
+    "phase": "initial_incorrect_image_contract",
+    "originalArtifactSha256": "b4d4782e1e8dce7988eba9031da2da5637f11991cd7fc58596f61155a6d47fda",
+    "scenariosSha256": "5b052bcec75f79f118e505d2cd067faa3673c0999eee2e32a5dc23bdcbc24ca1",
+    "sourceRevisionProvenance": "Recorded source revision supplied by the test coordinator; the initial revision also matches frozen-observations.json metadata.",
+    "browser": "Local headless Chromium loaded the static UI; API calls traversed an authenticated Jupyter bridge to the live Decision Lab server on Akamai.",
+    "providerLatency": "latencyMs, p50, and p95 are measured by the remote Decision Lab server around actual GPU endpoint requests, including transport and response handling. They are not GPU-only forward-pass timings.",
+    "browserLatency": "browserRoundTripMs and totalMs include the authenticated Jupyter bridge and local browser work. They are not measurements of a publicly deployed demo.",
+    "publicDeploymentConfirmed": false,
+    "imageTransport": "Incorrectly embedded image parts in state; SGLang treated them as text. These image-mode runs did not exercise valid native vision processing and are retained only as failure evidence.",
+    "accuracy": "A business decision is correct only when every requested field matches policy. Courier correctness scores shortest-path moves; checkpoint completion is reported separately. No failures or non-optimal moves are removed.",
+    "pairedBrowserTestsCompleted": false,
+    "credentials": "No credentials, private URLs, pod addresses, or browser image payloads are included."
+  },
+  "testsCompleted": false,
+  "testsCompletionNote": "The original report has no complete flag and did not reach its final layout/export checks. Its partial harness status is preserved."
+}

@@ -3,6 +3,8 @@
 import argparse
 import json
 import mimetypes
+import os
+import stat
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -13,6 +15,68 @@ from server.providers import execute_decision, catalog, ProviderError
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / 'public'
 LIMIT = threading.BoundedSemaphore(6)
+CREDENTIAL_KEYS = frozenset({'OPENROUTER_API_KEY', 'OPENAI_API_KEY', 'GPU_API_KEY'})
+
+
+class CredentialsFileError(ValueError):
+    """Safe startup error that never includes file contents or credential values."""
+
+
+def load_credentials_file(path):
+    """Load only credential keys from a private file, before accepting requests.
+
+    Open relative to a verified directory descriptor and verify the opened file,
+    so replacing a path with a symlink cannot bypass the permission checks.
+    """
+    path = Path(path).expanduser()
+    parent_fd = file_fd = None
+    try:
+        parent_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        parent = os.fstat(parent_fd)
+        if parent.st_uid != os.getuid() or stat.S_IMODE(parent.st_mode) != 0o700:
+            raise CredentialsFileError('Credentials directory must be owned by the current user with mode 0700')
+        file_fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent_fd)
+        info = os.fstat(file_fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) != 0o600:
+            raise CredentialsFileError('Credentials file must be a regular file owned by the current user with mode 0600')
+        if info.st_size > 65_536:
+            raise CredentialsFileError('Credentials file exceeds the allowed size')
+        with os.fdopen(file_fd, 'rb') as stream:
+            file_fd = None
+            raw = stream.read(65_537)
+        if len(raw) > 65_536:
+            raise CredentialsFileError('Credentials file exceeds the allowed size')
+    except OSError:
+        raise CredentialsFileError('Cannot securely open credentials file and its private directory; symlinks are not allowed') from None
+    finally:
+        if file_fd is not None:
+            os.close(file_fd)
+        if parent_fd is not None:
+            os.close(parent_fd)
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise CredentialsFileError('Credentials JSON must not contain duplicate keys')
+            result[key] = value
+        return result
+
+    try:
+        credentials = json.loads(raw, object_pairs_hook=unique_object)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise CredentialsFileError('Credentials file must contain a valid JSON object') from None
+    if not isinstance(credentials, dict) or not set(credentials).issubset(CREDENTIAL_KEYS):
+        raise CredentialsFileError('Credentials JSON must contain only supported credential keys')
+    if any(not isinstance(value, str) or any(character in value for character in '\x00\r\n') for value in credentials.values()):
+        raise CredentialsFileError('Credential values must be strings without NUL or line breaks')
+    try:
+        for value in credentials.values():
+            os.fsencode(value)
+    except UnicodeEncodeError:
+        raise CredentialsFileError('Credential values must be valid environment strings') from None
+    # Validate the whole document before changing the environment.
+    os.environ.update(credentials)
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
@@ -80,6 +144,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', default='0.0.0.0')
     parser.add_argument('--port', type=int, default=8080)
+    parser.add_argument('--credentials-file', type=Path,
+                        help='Optional private JSON credentials file; never pass credential values on the command line')
     args = parser.parse_args()
+    if args.credentials_file is not None:
+        try:
+            load_credentials_file(args.credentials_file)
+        except CredentialsFileError as error:
+            parser.error(str(error))
     print(f'Decision Lab: http://localhost:{args.port}', flush=True)
     ThreadingHTTPServer((args.host, args.port), Handler).serve_forever()

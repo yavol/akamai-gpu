@@ -2,6 +2,14 @@
 
 Deployment status: **experimental and not verified end to end**. No public demo URL has been confirmed. Unit tests cover manifest generation, routing configuration, and session supervision; they do not prove that the workshop's network policies permit public ingress, notebook authentication, or GPU access. Deployment attempts encountered network routing restrictions. Validate those paths and independent recovery access before changing workshop traffic.
 
+## Preferred workshop route: Jupyter Server Proxy
+
+Use the official Jupyter Server Proxy extension to expose the loopback app through Jupyter's authenticated `/proxy/8081/` path. Keep the existing workshop Service port **8080** and targetPort **8080**. The package is installed, but the running Jupyter process has not loaded it; the route is not activated or verified and is not a confirmed demo URL.
+
+Activation requires a planned Jupyter restart. Preserve the notebook's ephemeral home contents, application source, private configuration, and any required process startup instructions before that restart; detached app processes do not survive pod restart or replacement. Verify authenticated access and a real decision request after the extension loads. The current workshop blocks the alternate gateway port, so do not switch its Service targetPort to 8090 or repeat that routing experiment.
+
+The Kubernetes gateway and session helpers below remain experimental alternatives for environments whose network policies explicitly support their routes; they are not the current workshop deployment path.
+
 The `workshop.py` stdlib Python helper creates a persistent CPU Deployment with the demo server and an Nginx gateway. It keeps the notebook and GPU pods running. It requires `kubectl` already authenticated for the workshop namespace; it does not change ingress resources or create credentials.
 
 The existing workshop Service keeps its ports and identity. A new `decision-lab-workshop` Service copies its original pod selector and ports. The gateway routes ordinary notebook paths, including WebSockets, to that copied Service. `/decision-lab/` reaches the demo after Jupyter `/api/me` accepts the incoming cookie or Authorization header. Anonymous requests redirect to the notebook login. The public Host is preserved for the demo's origin check. After the authentication subrequest, the gateway removes notebook cookies and Authorization before forwarding to the Python app. Each proxy location declares its own headers explicitly because Nginx does not inherit the server's header list when a location defines any `proxy_set_header`.
@@ -64,4 +72,4 @@ The app binds only to `127.0.0.1:8081`; the authenticated gateway listens on por
 
 The detached supervisor holds a singleton lock and restarts its two child processes with bounded backoff. `stop` verifies the supervisor identity before signalling it and terminates only its own app/gateway children. This survives a Jupyter kernel disconnect, but **does not survive notebook pod replacement or restart**; use a supported platform startup hook if available. Source files on persistent storage alone do not restart the processes.
 
-The session helper does not switch ingress. Validate loopback authentication, notebook WebSockets, and inference first. Before pointing the existing Service targetPort at 8090, preserve its exact original definition and arrange a bounded automatic rollback if the ingress cannot reach that port. Restore the original targetPort before stopping the gateway. Namespace policy may still restrict the notebook pod's allowed ingress ports; session hosting does not bypass those restrictions.
+The session helper does not switch ingress. Its loopback app on port 8081 can be reached through Jupyter Server Proxy after that extension is activated and verified. Leave the workshop Service on port 8080 and targetPort 8080; the current workshop does not permit the gateway's alternate port 8090. Session hosting does not change those network restrictions.

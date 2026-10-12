@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-12T22:41:07.755Z",
+  "methodology": {
+    "latency": "Server wall-clock provider request including proxy, network, and routing",
+    "total": "Browser wall-clock full task including rendering",
+    "percentile": "Nearest-rank; first call included",
+    "workloads": "Synthetic seeded browser sandboxes; each model applies its own choices",
+    "warning": "Different actions can yield different game trajectories. No inference-only speed claim. Small samples are exploratory.",
+    "luna": "GPT-6 Luna chat with structured JSON; decision providers use choice heads."
+  },
+  "runs": [
+    {
+      "id": "c129eef4-61c4-42bb-abae-e2c69b61c743",
+      "kind": "procurement",
+      "provider": "gpu",
+      "label": "Akamai GPU \u00b7 Clef FP8",
+      "mode": "vision",
+      "seed": 42,
+      "round": 1,
+      "startedAt": "2026-10-12T22:41:04.223Z",
+      "calls": [
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 0.8409355982887636,
+              "probabilities": {
+                "Harbor Office": 0.06083454177072557,
+                "Summit Works": 0.045208392703432035,
+                "Northstar Supply": 0.8939570655258423
+              }
+            }
+          },
+          "latencyMs": 429.84,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 1235,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 428.48,
+            "headersMs": 428.41,
+            "bodyMs": 0.07,
+            "totalMs": 429.84,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 852.1999999992549,
+          "step": 1,
+          "correct": true,
+          "detail": "Northstar Supply \u00b7 NS-MX24 \u00b7 $306",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "PR-210",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": 0.8242646234795648,
+              "probabilities": {
+                "Harbor Office": 0.8828430823197098,
+                "Summit Works": 0.05219686706076921,
+                "Northstar Supply": 0.06496005061952104
+              }
+            }
+          },
+          "latencyMs": 414.82,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 1235,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 413.5,
+            "headersMs": 413.43,
+            "bodyMs": 0.06,
+            "totalMs": 414.82,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 684.2000000001863,
+          "step": 2,
+          "correct": false,
+          "detail": "Harbor Office \u00b7 HO-W62 \u00b7 $630",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "PR-213",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": 0.7548634514539989,
+              "probabilities": {
+                "Summit Works": 0.09991471118438112,
+                "Harbor Office": 0.8365756343026659,
+                "Northstar Supply": 0.06350965451295303
+              }
+            }
+          },
+          "latencyMs": 406.97,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 1235,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 405.8,
+            "headersMs": 405.74,
+            "bodyMs": 0.06,
+            "totalMs": 406.97,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 680.1999999992549,
+          "step": 3,
+          "correct": true,
+          "detail": "Harbor Office \u00b7 HO-D89 \u00b7 $728",
+          "expected": {
+            "supplier": "Harbor Office"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "PR-211",
+            "inputMode": "vision"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Summit Works",
+              "confidence": 0.7456849487113724,
+              "probabilities": {
+                "Summit Works": 0.8304566324742482,
+                "Harbor Office": 0.05267617200153191,
+                "Northstar Supply": 0.11686719552421994
+              }
+            }
+          },
+          "latencyMs": 408.07,
+          "provider": "gpu",
+          "model": "Cloudflare/clef-flash",
+          "requestedModel": "Cloudflare/clef-flash",
+          "upstreamProvider": "custom",
+          "usage": {
+            "input_tokens": 1235,
+            "output_tokens": 0
+          },
+          "requestId": null,
+          "timing": {
+            "upstreamMs": 407,
+            "headersMs": 406.94,
+            "bodyMs": 0.06,
+            "totalMs": 408.07,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 671.9000000003725,
+          "step": 4,
+          "correct": true,
+          "detail": "Summit Works \u00b7 SW-H46 \u00b7 $944",
+          "expected": {
+            "supplier": "Summit Works"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "PR-212",
+            "inputMode": "vision"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 3,
+      "status": "needs review",
+      "model": "Cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 3,
+        "score": 3
+      },
+      "outcome": "failure",
+      "totalMs": 3011.7000000001863,
+      "finishedAt": "2026-10-12T22:41:07.235Z",
+      "p50": 408.07,
+      "p95": 429.84
+    }
+  ],
+  "evidenceContext": {
+    "phase": "revised_procurement_image_table",
+    "originalArtifactSha256": "b4f1e7b547ab17ae804fc85e7a246cdc73ca46e0775859023da8bf1370c70270",
+    "scenariosSha256": "114e7b3f909c0b8f5da826c34193a64413f3c31a734a0ebbf96fe6b658546112",
+    "sourceRevisionProvenance": "Recorded source revision supplied by the test coordinator; matches the revised procurement table layout.",
+    "browser": "Local headless Chromium loaded the static UI; API calls traversed an authenticated Jupyter bridge to the live Decision Lab server on Akamai.",
+    "providerLatency": "latencyMs, p50, and p95 are measured by the remote Decision Lab server around actual GPU endpoint requests, including transport and response handling. They are not GPU-only forward-pass timings.",
+    "browserLatency": "browserRoundTripMs and totalMs include the authenticated Jupyter bridge and local browser work. They are not measurements of a publicly deployed demo.",
+    "publicDeploymentConfirmed": false,
+    "imageTransport": "Validated image data URLs sent in native SGLang top-level images; text remains in state.",
+    "accuracy": "A business decision is correct only when every requested field matches policy. Courier correctness scores shortest-path moves; checkpoint completion is reported separately. No failures or non-optimal moves are removed.",
+    "pairedBrowserTestsCompleted": true,
+    "credentials": "No credentials, private URLs, pod addresses, or browser image payloads are included.",
+    "cacheCaveat": "No local answer cache is used. Upstream caches were not controlled; earlier native-contract timings are preserved separately and should not be interpreted as a controlled speed comparison."
+  }
+}

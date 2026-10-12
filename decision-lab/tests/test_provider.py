@@ -128,7 +128,9 @@ class ProviderTests(unittest.TestCase):
         result = execute_decision("gpu", IMAGE_STATE, QUESTIONS)
         payload = post.call_args.args[1]
         self.assertEqual(payload["model"], "Cloudflare/clef-flash")
-        self.assertEqual(payload["state"], IMAGE_STATE)
+        self.assertEqual(payload["state"], "Read this image")
+        self.assertEqual(payload["images"], [PNG])
+        self.assertNotIn(PNG, payload["state"])
         self.assertEqual(payload["questions"], QUESTIONS)
         self.assertNotIn("provider", payload)
         self.assertEqual(result["answers"], SGLANG_RESULT["answers"])
@@ -137,6 +139,32 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(result["timing"]["upstreamMs"], 20)
         self.assertNotIn("inferenceMs", result["timing"])
         self.assertNotIn("inferenceMs", result)
+
+    @patch("server.providers._post_json", return_value=(SGLANG_RESULT, TIMING.copy()))
+    def test_gpu_separates_all_images_and_keeps_text_order(self, post):
+        os.environ["GPU_DECISIONS_URL"] = "http://gpu-service:8000/v1/systemone"
+        second = "data:image/png;base64," + base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"1" * 20).decode()
+        state = [IMAGE_STATE[1], {"type": "text", "text": "First observation"},
+                 {"type": "image_url", "image_url": {"url": second}}, "Second observation"]
+        execute_decision("gpu", state, QUESTIONS)
+        payload = post.call_args.args[1]
+        self.assertEqual(payload["state"], "First observation\n\nSecond observation")
+        self.assertEqual(payload["images"], [PNG, second])
+
+    @patch("server.providers._post_json", return_value=(SGLANG_RESULT, TIMING.copy()))
+    def test_gpu_image_only_input_does_not_turn_image_bytes_into_text(self, post):
+        os.environ["GPU_DECISIONS_URL"] = "http://gpu-service:8000/v1/systemone"
+        execute_decision("gpu", [IMAGE_STATE[1]], QUESTIONS)
+        payload = post.call_args.args[1]
+        self.assertEqual(payload["state"], "")
+        self.assertEqual(payload["images"], [PNG])
+
+    @patch("server.providers._post_json", return_value=(RESULT, TIMING.copy()))
+    def test_openrouter_images_keep_the_openrouter_state_contract(self, post):
+        execute_decision("clef", IMAGE_STATE, QUESTIONS)
+        payload = post.call_args.args[1]
+        self.assertEqual(payload["state"], IMAGE_STATE)
+        self.assertNotIn("images", payload)
 
     @patch("server.providers._post_json")
     def test_invalid_gpu_endpoint_is_unavailable_and_never_requested(self, post):
