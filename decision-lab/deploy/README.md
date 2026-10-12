@@ -1,12 +1,34 @@
 # Workshop Kubernetes deployment
 
-Deployment status: **experimental and not verified end to end**. No public demo URL has been confirmed. Unit tests cover manifest generation, routing configuration, and session supervision; they do not prove that the workshop's network policies permit public ingress, notebook authentication, or GPU access. Deployment attempts encountered network routing restrictions. Validate those paths and independent recovery access before changing workshop traffic.
+Deployment status: **operational through official Jupyter Server Proxy**. [Sanitized acceptance evidence](../evidence/public-route-acceptance.json) records anonymous redirects to authentication, authenticated app assets and health, five correct text controls, and three correct image controls. Notebook WebSocket execution passed separately; the temporary rollback watchdog was confirmed disarmed. These checks establish the workshop route's operation, not durable production hosting or a test from a user's laptop browser. Private hostnames and recovery details remain outside this repository.
+
+[Public-route browser evidence](../evidence/public-route-browser.json) also records local headless Chromium using a TLS-verified relay to reach the official authenticated proxy. Three text tasks and image courier completed across 30 real calls, with mobile layout and JSON export checked. The relay adds transport overhead; browser timing is labeled accordingly, and no direct laptop-browser measurement is claimed.
 
 ## Preferred workshop route: Jupyter Server Proxy
 
-Use the official Jupyter Server Proxy extension to expose the loopback app through Jupyter's authenticated `/proxy/8081/` path. Keep the existing workshop Service port **8080** and targetPort **8080**. The package is installed, but the running Jupyter process has not loaded it; the route is not activated or verified and is not a confirmed demo URL.
+The official Jupyter Server Proxy extension now exposes the loopback app through Jupyter's authenticated `/proxy/8081/` path. Keep the existing workshop Service port **8080** and targetPort **8080**. The extension was installed in the same Python environment as Jupyter and loaded during its planned restart; authenticated route checks then passed.
 
-Activation requires a planned Jupyter restart. Preserve the notebook's ephemeral home contents, application source, private configuration, and any required process startup instructions before that restart; detached app processes do not survive pod restart or replacement. Verify authenticated access and a real decision request after the extension loads. The current workshop blocks the alternate gateway port, so do not switch its Service targetPort to 8090 or repeat that routing experiment.
+For a new installation, select the Python executable used by the actual Jupyter server, install the verified extension version in that environment, enable it, and inspect its registration. If that interpreter has no `pip` module, use the `uv` alternative shown below instead of the first command:
+
+```bash
+"$JUPYTER_PYTHON" -m pip install "jupyter-server-proxy==4.6.0"
+# Equivalent for a uv-managed server environment without pip:
+# uv pip install --python "$JUPYTER_PYTHON" "jupyter-server-proxy==4.6.0"
+"$JUPYTER_PYTHON" -m jupyter server extension enable --py jupyter_server_proxy --sys-prefix
+"$JUPYTER_PYTHON" -m jupyter server extension list
+```
+
+The running Jupyter server loads the extension at startup. Before a planned restart, preserve the notebook's ephemeral home contents, application source, private configuration, and required startup instructions. Restart through the platform's supported lifecycle with its existing configuration. Run the app on loopback using privately configured `GPU_DECISIONS_URL` and an optional credential file:
+
+```bash
+"$APP_PYTHON" "$DECISION_LAB_SOURCE/server.py" \
+  --host 127.0.0.1 --port 8081 \
+  --credentials-file "$CREDENTIALS_FILE"
+```
+
+The credential file must remain outside Jupyter's served tree and the repository, in an owned directory with mode 0700; the owned regular file must have mode 0600. Omit `--credentials-file` when credentials are supplied only through the server environment. Retain the trailing slash on `/proxy/8081/`. Verify anonymous rejection, authenticated assets, a real decision, and notebook WebSockets after startup.
+
+Detached app processes do not survive notebook restart or replacement. Retain the operator's private recovery backup outside the ephemeral pod until a durable storage and startup lifecycle is configured; the workshop and agent-side recovery copies must not be discarded just because acceptance passed. The current workshop blocks the alternate gateway port, so do not switch its Service targetPort to 8090 or repeat that routing experiment.
 
 The Kubernetes gateway and session helpers below remain experimental alternatives for environments whose network policies explicitly support their routes; they are not the current workshop deployment path.
 
@@ -72,4 +94,4 @@ The app binds only to `127.0.0.1:8081`; the authenticated gateway listens on por
 
 The detached supervisor holds a singleton lock and restarts its two child processes with bounded backoff. `stop` verifies the supervisor identity before signalling it and terminates only its own app/gateway children. This survives a Jupyter kernel disconnect, but **does not survive notebook pod replacement or restart**; use a supported platform startup hook if available. Source files on persistent storage alone do not restart the processes.
 
-The session helper does not switch ingress. Its loopback app on port 8081 can be reached through Jupyter Server Proxy after that extension is activated and verified. Leave the workshop Service on port 8080 and targetPort 8080; the current workshop does not permit the gateway's alternate port 8090. Session hosting does not change those network restrictions.
+The session helper does not switch ingress. The current deployment uses the app on loopback port 8081 through the verified Jupyter Server Proxy route and does not require this helper's alternate gateway. Leave the workshop Service on port 8080 and targetPort 8080; the current workshop does not permit gateway port 8090. Session hosting does not change those network restrictions.

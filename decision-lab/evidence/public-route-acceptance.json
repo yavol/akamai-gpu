@@ -1,0 +1,112 @@
+{
+  "testedAt": 1791847724.2124124,
+  "route": "/proxy/8081/",
+  "checks": [
+    {
+      "name": "Anonymous route requires authentication",
+      "passed": true,
+      "status": 302
+    },
+    {
+      "name": "Authenticated HTML",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Authenticated app.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Authenticated scenarios.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Authenticated api/health",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "All model choices configured",
+      "passed": true,
+      "available": [
+        "clef",
+        "jev",
+        "luna",
+        "luna-decisions",
+        "gpu"
+      ]
+    }
+  ],
+  "probes": [
+    {
+      "provider": "gpu",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 47.98
+    },
+    {
+      "provider": "clef",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 309.06
+    },
+    {
+      "provider": "jev",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 357.9
+    },
+    {
+      "provider": "luna",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 1049.02
+    },
+    {
+      "provider": "luna-decisions",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 585.15
+    },
+    {
+      "provider": "gpu",
+      "mode": "vision",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 67.99
+    },
+    {
+      "provider": "clef",
+      "mode": "vision",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 535.84
+    },
+    {
+      "provider": "luna",
+      "mode": "vision",
+      "status": 200,
+      "correct": true,
+      "latencyMs": 1434.43
+    }
+  ],
+  "complete": true,
+  "evidenceContext": {
+    "originalArtifactSha256": "1f65b06d0f6215eb0a267a414e96cce9539bd8550412b2c9b6c70e1a16cbe459",
+    "sanitization": "Private route hostname removed; the generic authenticated proxy path is retained. All original checks, control probes, timings, and completion status are preserved.",
+    "validationScope": "HTTP operational acceptance through the official Jupyter Server Proxy route: anonymous authentication redirect, authenticated assets and health, configured model catalog, five text controls and three image controls. These small controls are not full workflow accuracy tests or laptop-browser QA.",
+    "publicDeploymentConfirmed": true,
+    "authentication": "Official Jupyter authentication protects the app route; no notebook credentials are included in this report.",
+    "sourceSha256": "114e7b3f909c0b8f5da826c34193a64413f3c31a734a0ebbf96fe6b658546112",
+    "sourceRevisionProvenance": "Deployment operator reconfirmed the scenarios source hash after the planned Jupyter restart.",
+    "operatorCorroboration": {
+      "notebookWebSocketExecution": "Passed, separately verified by deployment operator.",
+      "servicePort": 8080,
+      "serviceTargetPort": 8080,
+      "rollbackWatchdog": "Confirmed disarmed after acceptance by deployment operator."
+    },
+    "durability": "The notebook pod and its home storage are ephemeral. Keep private recovery backups; successful operational acceptance is not a durable production hosting guarantee."
+  }
+}

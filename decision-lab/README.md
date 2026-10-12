@@ -18,13 +18,13 @@ cd decision-lab
 python server.py --port 8080
 ```
 
-Open `http://localhost:8080/` on the server host. On a remote pod, use its authenticated ingress or supported port proxy. Assets and API calls resolve relative to the app directory, including a Jupyter `/proxy/8080/` URL; retain the trailing slash. The server and model can run in the same pod, with inference reachable only on loopback. No frontend build is required.
+Open `http://localhost:8080/` on the server host. On a remote pod, use its authenticated ingress or supported port proxy. Assets and API calls resolve relative to the app directory; retain the trailing slash on proxy URLs. The verified workshop configuration runs this app on loopback port 8081 and uses Jupyter's `/proxy/8081/` route. The server and model can run in the same pod, with inference reachable only on loopback. No frontend build is required.
 
 Use `.env.example` as a configuration reference; this application reads the process environment and does not automatically load `.env` files. OpenRouter is optional for a GPU-only deployment. A managed cloud environment’s injected credential placeholders are not portable secrets: supply a valid OpenRouter key separately to enable hosted comparisons on another host. The adapter uses the host’s configured proxy and CA trust. Keep the demo behind the workshop’s authenticated ingress when deploying; the Python server itself does not implement login.
 
 Optionally start with `python server.py --credentials-file /private/directory/credentials.json`. The file must contain a flat JSON object with only `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, and/or `GPU_API_KEY` string values. It must be a regular, non-symlink file owned by the current user with permissions `0600`; its immediate directory must belong to that user with permissions `0700`. Keep it outside the repository, app assets, and Jupyter's served file tree. Valid values override matching process variables at startup; unknown or duplicate keys are rejected without loading any values. No credential contents are printed. The current hosted models use OpenRouter, so `OPENAI_API_KEY` alone does not enable them.
 
-[Workshop deployment tools](deploy/README.md) are included as experimental options. Their source tests pass, but public deployment has not been verified end to end and no public demo URL is confirmed. Workshop network routing restricted the deployment attempts. Saved OpenRouter runs and live GPU checks through a private notebook bridge are labeled separately below; neither establishes a public GPU deployment.
+The workshop app is operational through the official Jupyter Server Proxy route `/proxy/8081/`, using the existing workshop login. [Public-route acceptance](evidence/public-route-acceptance.json) verified anonymous authentication redirects, authenticated assets, all configured models, five text controls, and three image controls. Notebook WebSocket execution also passed. The Service remains on port 8080 and targetPort 8080. See [deployment notes](deploy/README.md) for setup and lifecycle limits: notebook storage is ephemeral, and private recovery backups must be retained. Historical browser runs through a private notebook bridge remain labeled separately from public-route checks.
 
 ## Model switching
 
@@ -115,18 +115,22 @@ Final live browser tests passed all four support and procurement cases for Clef 
 
 Chromium also verified desktop/mobile layout, real form population, model and observation selectors, repeated stopping/restarting, JSON export, and a mocked failure path for the move cap. The mocked failure-path test is excluded from live benchmark results. The historical verification also passed the original fifteen backend unit tests; run the test command above for the current adapter suite. See `evidence/browser-qa-final.json` and `evidence/browser-final-export.json`.
 
-### Frozen text baseline with self-hosted GPU
+### Frozen text comparison from one Akamai app host
 
-The [GPU frozen benchmark](evidence/gpu-frozen-benchmark.json) replayed the same six saved text observations three times: all 18 observations and 30 named questions passed. Each hosted model's earlier run also passed all 18 observations and 30 questions.
+The [72-request Akamai benchmark](evidence/akamai-frozen-benchmark.json) sent the same six saved text observations to GPU, Clef, JEV, and Luna three times each. Requests ran sequentially through the same configured Akamai app process, with provider order rotated each repeat. Every model passed all 18 observations and 30 named questions; no request failed, and no attempt was retried or discarded.
 
 | Model and measured route | p50 request | p95 request |
 |---|---:|---:|
-| Self-hosted Clef, Akamai app to GPU | 98.00 ms | 112.41 ms |
-| Clef Flash, historical OpenRouter | 435 ms | 606 ms |
-| JEV 1.13, historical OpenRouter | 314 ms | 349 ms |
-| GPT-6 Luna chat, historical OpenRouter | 1,162 ms | 2,211 ms |
+| Self-hosted Clef, local Akamai GPU | 98.67 ms | 113.77 ms |
+| Clef Flash, OpenRouter | 314.99 ms | 433.14 ms |
+| JEV 1.13, OpenRouter | 203.62 ms | 292.73 ms |
+| GPT-6 Luna chat, OpenRouter | 963.81 ms | 1,619.37 ms |
 
-Inputs and scoring match, but execution time and network path differ: GPU requests ran from the remote Akamai app, while hosted requests used the earlier cloud-to-OpenRouter path. This is not a controlled latency comparison or an inference-only speedup claim. Upstream caching was not controlled. The UI's saved benchmark remains the clearly labeled historical OpenRouter run.
+These are remote app server measurements of actual provider requests; Jupyter coordination and browser transport are excluded. GPU uses a local cluster route while hosted models use external OpenRouter routes, so differences include networking and routing as well as inference. Inputs, scoring, client host, and run window now match, but these small samples are not an inference-only speed comparison. Earlier smoke checks warmed providers, and upstream caching was not controlled.
+
+The UI's saved verification panel and `public/benchmark.json` now show this 72-request Akamai run. The [earlier GPU-only run](evidence/gpu-frozen-benchmark.json) and [historical OpenRouter benchmark](evidence/benchmark.json) remain preserved as separate evidence.
+
+The configured-hosted [browser smoke report](evidence/hosted-akamai-browser.json) preserves nine text runs and 62 actual calls through the private Jupyter bridge. Clef and JEV completed courier in ten optimal moves, and all three hosted models passed all four support and procurement cases. Luna courier reached only two of five checkpoints before the eighteen-move limit (eleven optimal moves), so that run remains **incomplete**. Operational checks and the [nine-run export](evidence/hosted-akamai-browser-export.json) passed without an accuracy threshold. Browser task times include bridge transport; this is not evidence of a public deployment.
 
 ### Saved self-hosted GPU checks — October 12, 2026
 
@@ -142,6 +146,8 @@ Local headless Chromium drove the static UI and sent API calls through an authen
 | Procurement | Image | 3/4 correct cases; **needs review** | 408.07 ms |
 
 The [final full browser suite](evidence/gpu-final-browser.json) completed its catalog, task, mobile-layout, and export checks. Support image results come from the [native-contract business run](evidence/gpu-native-vision-browser.json); that source revision predates a procurement-only image-layout change, with support unchanged. The [revised procurement image run](evidence/gpu-table-browser.json) still failed one case. Its UI and export retain **needs review** and a failure outcome; it should not be treated as validated automatic purchasing.
+
+A separate [public-route browser check](evidence/public-route-browser.json) then sent 30 real GPU requests through the official authenticated proxy. Local headless Chromium used a local relay whose upstream TLS verification remained enabled; authentication stayed relay-side. Text courier, support, procurement, and image courier all completed; image courier recovered from one detour (11/12 optimal moves, 5/5 checkpoints). Mobile layout and the four-run export passed. The scenarios source hash was identical when fetched through the route before and after testing. Browser timings include relay/proxy overhead, so this is not a direct laptop-browser latency measurement. Earlier image procurement's 3/4 result remains unresolved and was not retested in this public-route suite.
 
 These small, illustrative runs are not a controlled, identical-observation latency comparison against the historical OpenRouter models. Provider timings exclude the browser-to-app bridge but include app-to-GPU transport and response validation. Upstream caching was not controlled. The earlier [native-contract courier run](evidence/gpu-native-browser.json), at 200.90 ms image p50, is retained alongside the later 137.02 ms result. Its harness stopped on an overly strict optimal-move assertion, so the original missing `complete` flag remains missing and `testsCompleted` is false despite checkpoint completion. `gpu-initial-*` evidence preserves earlier image-contract failures: images were incorrectly sent inside `state`, so those image results are not valid vision benchmarks. Each published GPU browser JSON includes source SHA, original artifact SHA, transport methodology, and harness completion status.
 

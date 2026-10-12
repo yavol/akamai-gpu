@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-10-12T20:56:48.268941+00:00",
-  "completedAt": "2026-10-12T20:57:24.590324+00:00",
+  "startedAt": "2026-10-12T23:23:45.216386+00:00",
+  "completedAt": "2026-10-12T23:24:16.803306+00:00",
   "complete": true,
   "fixtureSha256": "d2b06e45089118e0da86554fc7ce1a6a34a28c99aa23132d45441e2ca9c349bd",
   "sourceSha256": "5b052bcec75f79f118e505d2cd067faa3673c0999eee2e32a5dc23bdcbc24ca1",
@@ -10,13 +10,14 @@
     "observations": 6,
     "repeats": 3,
     "providers": [
+      "gpu",
       "clef",
       "jev",
       "luna"
     ],
-    "plannedRequests": 54,
+    "plannedRequests": 72,
     "ordering": "Sequential requests; each observation is sent to every provider. Provider order rotates left one position each repetition.",
-    "latency": "Provider adapter wall time includes network, OpenRouter routing, inference, response transfer and validation. All attempts included; no discarded warmup or local cache.",
+    "latency": "Successful request latency is the existing Akamai app server provider-adapter wall time returned by its API: network, provider routing where applicable, inference, response transfer and validation. Jupyter coordination and loopback client overhead are excluded. Failed API requests retain measured client wall time and are counted as incorrect. All 72 attempts included; no discarded warmup, retry, fallback, or local cache.",
     "percentiles": "Linear interpolation at sorted rank (n-1)*p; small N, descriptive only.",
     "accuracy": "All named choices must match ground truth; array ground truth accepts any listed choice. Request failures count as incorrect.",
     "groundTruth": "Only state and questions are passed to execute_decision. Expected answers are used after inference for scoring.",
@@ -27,8 +28,14 @@
     "limitations": [
       "Two observations per demo and three repetitions are not representative production coverage.",
       "Repeated inputs may benefit from upstream prompt caches; no local result cache is used.",
-      "Frozen observations do not test model recovery from earlier mistakes or complete workflow success."
-    ]
+      "Frozen observations do not test model recovery from earlier mistakes or complete workflow success.",
+      "The GPU local-cluster route differs from hosted OpenRouter network routes. Request-wall-time differences include networking and provider routing, not only inference.",
+      "Earlier browser smoke calls warmed providers; no benchmark attempts were discarded, and upstream caching was not controlled."
+    ],
+    "network": "All four providers were requested sequentially by the same existing Akamai application process during this benchmark. GPU uses its local cluster endpoint; Clef, JEV and Luna use external OpenRouter routes. Network routes still differ by provider, so this is not an inference-only speed comparison.",
+    "gpuRouting": "Cloudflare/clef-flash served by self-hosted Akamai GPU; no provider router or model substitution.",
+    "command": "python scripts/benchmark_providers.py --providers gpu clef jev luna --repeats 3 --fixtures evidence/frozen-observations.json --output akamai-frozen-benchmark.json (execute_decision delegated to the existing local app API; server-measured latencies retained)",
+    "annotation": "Exact frozen CLI scoring and ordering retained. Private deployment URLs and nonessential request IDs are excluded from public evidence. Credential files were not read by this benchmark; the existing configured app made the provider calls."
   },
   "fixtures": [
     {
@@ -118,8 +125,54 @@
       "repeat": 1,
       "fixtureId": "courier-1",
       "kind": "courier",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:45.216406+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.9557668223958411,
+            "probabilities": {
+              "up": 0.022116588802079524,
+              "left": 0.9778834111979205
+            }
+          }
+        },
+        "latencyMs": 60.84,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 333,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 60.68,
+          "headersMs": 60.63,
+          "bodyMs": 0.05,
+          "totalMs": 60.84,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 60.84,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 2,
+      "repeat": 1,
+      "fixtureId": "courier-1",
+      "kind": "courier",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:56:48.268979+00:00",
+      "startedAt": "2026-10-12T23:23:45.279440+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -133,7 +186,7 @@
             }
           }
         },
-        "latencyMs": 407.56,
+        "latencyMs": 335.46,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -143,67 +196,18 @@
           "output_tokens": 0,
           "cost": 1.2654e-05
         },
-        "requestId": "gen-dec-1791838608-UoYDCrTDDhs2hbdw1yXx",
         "timing": {
-          "upstreamMs": 407.19,
-          "headersMs": 405.96,
-          "bodyMs": 1.23,
-          "totalMs": 407.56,
+          "upstreamMs": 335.32,
+          "headersMs": 335.15,
+          "bodyMs": 0.17,
+          "totalMs": 335.46,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 407.56,
-      "questionChecks": {
-        "direction": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 2,
-      "repeat": 1,
-      "fixtureId": "courier-1",
-      "kind": "courier",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:56:48.677542+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "direction": {
-            "type": "choice",
-            "choice": "left",
-            "confidence": 1,
-            "probabilities": {
-              "up": 0,
-              "left": 1
-            }
-          }
-        },
-        "latencyMs": 406.72,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 514,
-          "output_tokens": 31,
-          "cost": 2.1588e-05
-        },
-        "requestId": "gen-dec-1791838608-aycyH2dkzJdzgGQVHbhI",
-        "timing": {
-          "upstreamMs": 406.54,
-          "headersMs": 406.42,
-          "bodyMs": 0.13,
-          "totalMs": 406.72,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 406.72,
+      "latencyMs": 335.46,
       "questionChecks": {
         "direction": true
       },
@@ -214,8 +218,55 @@
       "repeat": 1,
       "fixtureId": "courier-1",
       "kind": "courier",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:23:45.617546+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.98,
+            "probabilities": {
+              "up": 0.01,
+              "left": 0.99
+            }
+          }
+        },
+        "latencyMs": 437.48,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 514,
+          "output_tokens": 31,
+          "cost": 2.1588e-05
+        },
+        "timing": {
+          "upstreamMs": 437.32,
+          "headersMs": 437.12,
+          "bodyMs": 0.2,
+          "totalMs": 437.48,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 437.48,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 4,
+      "repeat": 1,
+      "fixtureId": "courier-1",
+      "kind": "courier",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:56:49.085187+00:00",
+      "startedAt": "2026-10-12T23:23:46.057618+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -226,7 +277,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 998.93,
+        "latencyMs": 779.49,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -254,31 +305,77 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838609-MbD9VEslVd16SG9mAgW2",
         "timing": {
-          "upstreamMs": 998.62,
-          "headersMs": 451.68,
-          "bodyMs": 546.94,
-          "totalMs": 998.93,
+          "upstreamMs": 779.3,
+          "headersMs": 350.71,
+          "bodyMs": 428.59,
+          "totalMs": 779.49,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 998.93,
+      "latencyMs": 779.49,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 4,
+      "sequence": 5,
+      "repeat": 1,
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:46.839822+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.9443101785727475,
+            "probabilities": {
+              "up": 0.020298500034326167,
+              "right": 0.01682804758384225,
+              "left": 0.9628734523818316
+            }
+          }
+        },
+        "latencyMs": 62.26,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 352,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 62.08,
+          "headersMs": 62.03,
+          "bodyMs": 0.05,
+          "totalMs": 62.26,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 62.26,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 6,
       "repeat": 1,
       "fixtureId": "courier-2",
       "kind": "courier",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:56:50.085120+00:00",
+      "startedAt": "2026-10-12T23:23:46.904634+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -293,7 +390,7 @@
             }
           }
         },
-        "latencyMs": 431.11,
+        "latencyMs": 728.48,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -303,31 +400,30 @@
           "output_tokens": 0,
           "cost": 1.3376e-05
         },
-        "requestId": "gen-dec-1791838610-Sq8rZ7i6YQxKp3QfhBHW",
         "timing": {
-          "upstreamMs": 430.93,
-          "headersMs": 430.81,
-          "bodyMs": 0.13,
-          "totalMs": 431.11,
+          "upstreamMs": 728.3,
+          "headersMs": 728.15,
+          "bodyMs": 0.16,
+          "totalMs": 728.48,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 431.11,
+      "latencyMs": 728.48,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 5,
+      "sequence": 7,
       "repeat": 1,
       "fixtureId": "courier-2",
       "kind": "courier",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:56:50.517198+00:00",
+      "startedAt": "2026-10-12T23:23:47.635871+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -342,7 +438,7 @@
             }
           }
         },
-        "latencyMs": 323.27,
+        "latencyMs": 185.69,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -352,31 +448,30 @@
           "output_tokens": 38,
           "cost": 2.226e-05
         },
-        "requestId": "gen-dec-1791838610-16W5kJlCzKz7NogsHYy1",
         "timing": {
-          "upstreamMs": 323.1,
-          "headersMs": 322.97,
-          "bodyMs": 0.13,
-          "totalMs": 323.27,
+          "upstreamMs": 185.51,
+          "headersMs": 185.36,
+          "bodyMs": 0.15,
+          "totalMs": 185.69,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 323.27,
+      "latencyMs": 185.69,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 6,
+      "sequence": 8,
       "repeat": 1,
       "fixtureId": "courier-2",
       "kind": "courier",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:56:50.841459+00:00",
+      "startedAt": "2026-10-12T23:23:47.825481+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -387,7 +482,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1402.18,
+        "latencyMs": 900.52,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -415,31 +510,100 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838610-rmEECw66wr0ruabT2BMt",
         "timing": {
-          "upstreamMs": 1401.9,
-          "headersMs": 471.85,
-          "bodyMs": 930.06,
-          "totalMs": 1402.18,
+          "upstreamMs": 900.32,
+          "headersMs": 314.21,
+          "bodyMs": 586.12,
+          "totalMs": 900.52,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1402.18,
+      "latencyMs": 900.52,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 7,
+      "sequence": 9,
+      "repeat": 1,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:48.728867+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": 0.9712260027880196,
+            "probabilities": {
+              "Billing": 0.9784195020910146,
+              "Technical support": 0.0060496536157596936,
+              "Security": 0.009667318951761388,
+              "Account access": 0.0058635253414642775
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.7179822250901253,
+            "probabilities": {
+              "Normal": 0.8119881500600836,
+              "High": 0.09253720191534545,
+              "Critical": 0.09547464802457101
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": 0.9457768042478145,
+            "probabilities": {
+              "Resolve with policy": 0.9638512028318764,
+              "Request details": 0.0183567880813957,
+              "Escalate": 0.01779200908672796
+            }
+          }
+        },
+        "latencyMs": 110.4,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 745,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 110.19,
+          "headersMs": 110.13,
+          "bodyMs": 0.06,
+          "totalMs": 110.4,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 110.4,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 10,
       "repeat": 1,
       "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:56:52.244803+00:00",
+      "startedAt": "2026-10-12T23:23:48.843100+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -475,7 +639,7 @@
             }
           }
         },
-        "latencyMs": 281.49,
+        "latencyMs": 318.97,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -485,19 +649,18 @@
           "output_tokens": 0,
           "cost": 2.831e-05
         },
-        "requestId": "gen-dec-1791838612-da2fHVmvwUUcT3Cz1Il4",
         "timing": {
-          "upstreamMs": 281.28,
-          "headersMs": 280.59,
-          "bodyMs": 0.69,
-          "totalMs": 281.49,
+          "upstreamMs": 318.76,
+          "headersMs": 318.56,
+          "bodyMs": 0.2,
+          "totalMs": 318.97,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 281.49,
+      "latencyMs": 318.97,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -506,23 +669,23 @@
       "correct": true
     },
     {
-      "sequence": 8,
+      "sequence": 11,
       "repeat": 1,
       "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:56:52.527412+00:00",
+      "startedAt": "2026-10-12T23:23:49.165234+00:00",
       "completed": true,
       "result": {
         "answers": {
           "team": {
             "type": "choice",
             "choice": "Billing",
-            "confidence": 0.96,
+            "confidence": 0.95,
             "probabilities": {
-              "Billing": 0.97,
+              "Billing": 0.96,
               "Technical support": 0,
-              "Security": 0.03,
+              "Security": 0.04,
               "Account access": 0
             }
           },
@@ -547,7 +710,7 @@
             }
           }
         },
-        "latencyMs": 281.25,
+        "latencyMs": 218.73,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -557,19 +720,18 @@
           "output_tokens": 128,
           "cost": 3.7422e-05
         },
-        "requestId": "gen-dec-1791838612-jnTA8FwnIv4vN1KfOYbz",
         "timing": {
-          "upstreamMs": 281.05,
-          "headersMs": 280.92,
-          "bodyMs": 0.13,
-          "totalMs": 281.25,
+          "upstreamMs": 218.51,
+          "headersMs": 218.34,
+          "bodyMs": 0.17,
+          "totalMs": 218.73,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 281.25,
+      "latencyMs": 218.73,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -578,12 +740,12 @@
       "correct": true
     },
     {
-      "sequence": 9,
+      "sequence": 12,
       "repeat": 1,
       "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:56:52.810143+00:00",
+      "startedAt": "2026-10-12T23:23:49.386906+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -606,7 +768,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1151.79,
+        "latencyMs": 1173.43,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -634,19 +796,18 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838612-eZ0KtbhYuCmdSAKYD06y",
         "timing": {
-          "upstreamMs": 1151.56,
-          "headersMs": 460.9,
-          "bodyMs": 690.66,
-          "totalMs": 1151.79,
+          "upstreamMs": 1173.18,
+          "headersMs": 417.38,
+          "bodyMs": 755.8,
+          "totalMs": 1173.43,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1151.79,
+      "latencyMs": 1173.43,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -655,12 +816,82 @@
       "correct": true
     },
     {
-      "sequence": 10,
+      "sequence": 13,
+      "repeat": 1,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:50.563397+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": 0.9238645655191511,
+            "probabilities": {
+              "Billing": 0.018098581430210574,
+              "Technical support": 0.9428984241393632,
+              "Security": 0.016478945918487004,
+              "Account access": 0.022524048511939114
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.9023373746421588,
+            "probabilities": {
+              "Normal": 0.9348915830947726,
+              "High": 0.03858758407561322,
+              "Critical": 0.026520832829614212
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": 0.9461910174845614,
+            "probabilities": {
+              "Resolve with policy": 0.020166763671169586,
+              "Request details": 0.9641273449897075,
+              "Escalate": 0.015705891339122834
+            }
+          }
+        },
+        "latencyMs": 111.01,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 736,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 110.8,
+          "headersMs": 110.74,
+          "bodyMs": 0.06,
+          "totalMs": 111.01,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 111.01,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 14,
       "repeat": 1,
       "fixtureId": "intake-2",
       "kind": "intake",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:56:53.963278+00:00",
+      "startedAt": "2026-10-12T23:23:50.677587+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -696,7 +927,7 @@
             }
           }
         },
-        "latencyMs": 271.07,
+        "latencyMs": 301.79,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -706,19 +937,18 @@
           "output_tokens": 0,
           "cost": 2.7968e-05
         },
-        "requestId": "gen-dec-1791838613-Z2xDc9iJmeQm3UFAwC7h",
         "timing": {
-          "upstreamMs": 270.86,
-          "headersMs": 270.75,
-          "bodyMs": 0.11,
-          "totalMs": 271.07,
+          "upstreamMs": 301.61,
+          "headersMs": 301.44,
+          "bodyMs": 0.17,
+          "totalMs": 301.79,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 271.07,
+      "latencyMs": 301.79,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -727,12 +957,12 @@
       "correct": true
     },
     {
-      "sequence": 11,
+      "sequence": 15,
       "repeat": 1,
       "fixtureId": "intake-2",
       "kind": "intake",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:56:54.243826+00:00",
+      "startedAt": "2026-10-12T23:23:50.982553+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -768,7 +998,7 @@
             }
           }
         },
-        "latencyMs": 339.04,
+        "latencyMs": 209.04,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -778,19 +1008,18 @@
           "output_tokens": 128,
           "cost": 3.7086e-05
         },
-        "requestId": "gen-dec-1791838614-vq019hPY6pGKMdd1aJ2N",
         "timing": {
-          "upstreamMs": 338.8,
-          "headersMs": 338.63,
-          "bodyMs": 0.17,
-          "totalMs": 339.04,
+          "upstreamMs": 208.83,
+          "headersMs": 208.62,
+          "bodyMs": 0.21,
+          "totalMs": 209.04,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 339.04,
+      "latencyMs": 209.04,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -799,12 +1028,12 @@
       "correct": true
     },
     {
-      "sequence": 12,
+      "sequence": 16,
       "repeat": 1,
       "fixtureId": "intake-2",
       "kind": "intake",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:56:54.584372+00:00",
+      "startedAt": "2026-10-12T23:23:51.194783+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -827,7 +1056,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1202.14,
+        "latencyMs": 1217.72,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -855,19 +1084,18 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838614-BPhKoluA9opriF4xk8vp",
         "timing": {
-          "upstreamMs": 1201.91,
-          "headersMs": 429.44,
-          "bodyMs": 772.47,
-          "totalMs": 1202.14,
+          "upstreamMs": 1217.45,
+          "headersMs": 305.84,
+          "bodyMs": 911.61,
+          "totalMs": 1217.72,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1202.14,
+      "latencyMs": 1217.72,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -876,259 +1104,47 @@
       "correct": true
     },
     {
-      "sequence": 13,
-      "repeat": 1,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:56:55.788344+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 0.3736,
-            "probabilities": {
-              "Harbor Office": 0.1738,
-              "Summit Works": 0.0884,
-              "Northstar Supply": 0.7378
-            }
-          }
-        },
-        "latencyMs": 606.55,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 637,
-          "output_tokens": 0,
-          "cost": 2.4206e-05
-        },
-        "requestId": "gen-dec-1791838615-1RTmG6Ry0xF6LAkzyTIQ",
-        "timing": {
-          "upstreamMs": 606.38,
-          "headersMs": 605.49,
-          "bodyMs": 0.89,
-          "totalMs": 606.55,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 606.55,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 14,
-      "repeat": 1,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:56:56.396495+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 1,
-            "probabilities": {
-              "Harbor Office": 0,
-              "Summit Works": 0,
-              "Northstar Supply": 1
-            }
-          }
-        },
-        "latencyMs": 263.87,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 821,
-          "output_tokens": 48,
-          "cost": 3.4482e-05
-        },
-        "requestId": "gen-dec-1791838616-NXIB1UpKyTLUPvdTZj6S",
-        "timing": {
-          "upstreamMs": 263.7,
-          "headersMs": 263.58,
-          "bodyMs": 0.12,
-          "totalMs": 263.87,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 263.87,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 15,
-      "repeat": 1,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:56:56.662176+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": null,
-            "probabilities": null
-          }
-        },
-        "latencyMs": 2932.23,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
-        "usage": {
-          "prompt_tokens": 591,
-          "completion_tokens": 17,
-          "total_tokens": 608,
-          "cost": 6.6924e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 6.76e-05,
-            "upstream_inference_prompt_cost": 5.91e-05,
-            "upstream_inference_completions_cost": 8.5e-06
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
-        },
-        "requestId": "gen-1791838616-CIWSBELhZtV5GgMZTCHx",
-        "timing": {
-          "upstreamMs": 2932.03,
-          "headersMs": 435.66,
-          "bodyMs": 2496.37,
-          "totalMs": 2932.23,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
-      },
-      "latencyMs": 2932.23,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 16,
-      "repeat": 1,
-      "fixtureId": "procurement-2",
-      "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:56:59.596318+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 0.3887,
-            "probabilities": {
-              "Harbor Office": 0.1988,
-              "Summit Works": 0.06,
-              "Northstar Supply": 0.7412
-            }
-          }
-        },
-        "latencyMs": 464.59,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 638,
-          "output_tokens": 0,
-          "cost": 2.4244e-05
-        },
-        "requestId": "gen-dec-1791838619-AGQIvh1Y9yqOgitPOdm1",
-        "timing": {
-          "upstreamMs": 464.42,
-          "headersMs": 464.27,
-          "bodyMs": 0.15,
-          "totalMs": 464.59,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 464.59,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
       "sequence": 17,
       "repeat": 1,
-      "fixtureId": "procurement-2",
+      "fixtureId": "procurement-1",
       "kind": "procurement",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:00.062688+00:00",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:52.415791+00:00",
       "completed": true,
       "result": {
         "answers": {
           "supplier": {
             "type": "choice",
             "choice": "Northstar Supply",
-            "confidence": 1,
+            "confidence": 0.6533269566156323,
             "probabilities": {
-              "Harbor Office": 0,
-              "Summit Works": 0,
-              "Northstar Supply": 1
+              "Harbor Office": 0.15378660233390049,
+              "Summit Works": 0.07732875992234477,
+              "Northstar Supply": 0.7688846377437548
             }
           }
         },
-        "latencyMs": 265.6,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
+        "latencyMs": 98.67,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
-          "input_tokens": 821,
-          "output_tokens": 48,
-          "cost": 3.4482e-05
+          "input_tokens": 637,
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838620-MKbTpiYH8HUrjvJ66Oob",
         "timing": {
-          "upstreamMs": 265.41,
-          "headersMs": 265.28,
-          "bodyMs": 0.13,
-          "totalMs": 265.6,
+          "upstreamMs": 98.46,
+          "headersMs": 98.4,
+          "bodyMs": 0.06,
+          "totalMs": 98.67,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 265.6,
+      "latencyMs": 98.67,
       "questionChecks": {
         "supplier": true
       },
@@ -1137,61 +1153,46 @@
     {
       "sequence": 18,
       "repeat": 1,
-      "fixtureId": "procurement-2",
+      "fixtureId": "procurement-1",
       "kind": "procurement",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:00.330131+00:00",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:23:52.517831+00:00",
       "completed": true,
       "result": {
         "answers": {
           "supplier": {
             "type": "choice",
             "choice": "Northstar Supply",
-            "confidence": null,
-            "probabilities": null
+            "confidence": 0.3736,
+            "probabilities": {
+              "Harbor Office": 0.1738,
+              "Summit Works": 0.0884,
+              "Northstar Supply": 0.7378
+            }
           }
         },
-        "latencyMs": 1009.04,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
+        "latencyMs": 276.07,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
         "usage": {
-          "prompt_tokens": 589,
-          "completion_tokens": 17,
-          "total_tokens": 606,
-          "cost": 6.6726e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 6.74e-05,
-            "upstream_inference_prompt_cost": 5.89e-05,
-            "upstream_inference_completions_cost": 8.5e-06
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
+          "input_tokens": 637,
+          "output_tokens": 0,
+          "cost": 2.4206e-05
         },
-        "requestId": "gen-1791838620-nlOtVhWqbfxw8y926qgI",
         "timing": {
-          "upstreamMs": 1008.83,
-          "headersMs": 426.61,
-          "bodyMs": 582.22,
-          "totalMs": 1009.04,
+          "upstreamMs": 275.89,
+          "headersMs": 275.72,
+          "bodyMs": 0.17,
+          "totalMs": 276.07,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
+        "confidenceKind": "native",
+        "transport": "decisions"
       },
-      "latencyMs": 1009.04,
+      "latencyMs": 276.07,
       "questionChecks": {
         "supplier": true
       },
@@ -1199,79 +1200,79 @@
     },
     {
       "sequence": 19,
-      "repeat": 2,
-      "fixtureId": "courier-1",
-      "kind": "courier",
+      "repeat": 1,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:01.341256+00:00",
+      "startedAt": "2026-10-12T23:23:52.797224+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "direction": {
+          "supplier": {
             "type": "choice",
-            "choice": "left",
-            "confidence": 0.98,
+            "choice": "Northstar Supply",
+            "confidence": 1,
             "probabilities": {
-              "up": 0.01,
-              "left": 0.99
+              "Harbor Office": 0,
+              "Summit Works": 0,
+              "Northstar Supply": 1
             }
           }
         },
-        "latencyMs": 292.44,
+        "latencyMs": 189.87,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
         "upstreamProvider": "TypeSafe",
         "usage": {
-          "input_tokens": 514,
-          "output_tokens": 31,
-          "cost": 2.1588e-05
+          "input_tokens": 821,
+          "output_tokens": 48,
+          "cost": 3.4482e-05
         },
-        "requestId": "gen-dec-1791838621-DIuedw14x7yUNdv9GdoX",
         "timing": {
-          "upstreamMs": 292.27,
-          "headersMs": 292.15,
-          "bodyMs": 0.11,
-          "totalMs": 292.44,
+          "upstreamMs": 189.7,
+          "headersMs": 189.51,
+          "bodyMs": 0.19,
+          "totalMs": 189.87,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 292.44,
+      "latencyMs": 189.87,
       "questionChecks": {
-        "direction": true
+        "supplier": true
       },
       "correct": true
     },
     {
       "sequence": 20,
-      "repeat": 2,
-      "fixtureId": "courier-1",
-      "kind": "courier",
+      "repeat": 1,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:01.635650+00:00",
+      "startedAt": "2026-10-12T23:23:52.990406+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "direction": {
+          "supplier": {
             "type": "choice",
-            "choice": "left",
+            "choice": "Northstar Supply",
             "confidence": null,
             "probabilities": null
           }
         },
-        "latencyMs": 859.31,
+        "latencyMs": 1379.23,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
         "upstreamProvider": "OpenAI",
         "usage": {
-          "prompt_tokens": 328,
-          "completion_tokens": 15,
-          "total_tokens": 343,
-          "cost": 3.9897e-05,
+          "prompt_tokens": 591,
+          "completion_tokens": 17,
+          "total_tokens": 608,
+          "cost": 6.6924e-05,
           "is_byok": false,
           "prompt_tokens_details": {
             "cached_tokens": 0,
@@ -1280,9 +1281,9 @@
             "video_tokens": 0
           },
           "cost_details": {
-            "upstream_inference_cost": 4.03e-05,
-            "upstream_inference_prompt_cost": 3.28e-05,
-            "upstream_inference_completions_cost": 7.5e-06
+            "upstream_inference_cost": 6.76e-05,
+            "upstream_inference_prompt_cost": 5.91e-05,
+            "upstream_inference_completions_cost": 8.5e-06
           },
           "completion_tokens_details": {
             "reasoning_tokens": 0,
@@ -1290,148 +1291,193 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838621-84Sx2K4TxQsotVrWzN4p",
         "timing": {
-          "upstreamMs": 859.09,
-          "headersMs": 408.7,
-          "bodyMs": 450.39,
-          "totalMs": 859.31,
+          "upstreamMs": 1379.0,
+          "headersMs": 330.78,
+          "bodyMs": 1048.23,
+          "totalMs": 1379.23,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 859.31,
+      "latencyMs": 1379.23,
       "questionChecks": {
-        "direction": true
+        "supplier": true
       },
       "correct": true
     },
     {
       "sequence": 21,
-      "repeat": 2,
-      "fixtureId": "courier-1",
-      "kind": "courier",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:02.497169+00:00",
+      "repeat": 1,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:54.373133+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "direction": {
+          "supplier": {
             "type": "choice",
-            "choice": "left",
-            "confidence": 0.8806,
+            "choice": "Northstar Supply",
+            "confidence": 0.4821949002816325,
             "probabilities": {
-              "up": 0.0308,
-              "left": 0.9692
+              "Harbor Office": 0.27725832514251014,
+              "Summit Works": 0.0679450746697349,
+              "Northstar Supply": 0.654796600187755
             }
           }
         },
-        "latencyMs": 452.12,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
+        "latencyMs": 98.49,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
-          "input_tokens": 333,
-          "output_tokens": 0,
-          "cost": 1.2654e-05
+          "input_tokens": 638,
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838622-Og7zfL4Ff85lEzV53LAy",
         "timing": {
-          "upstreamMs": 451.94,
-          "headersMs": 451.82,
-          "bodyMs": 0.12,
-          "totalMs": 452.12,
+          "upstreamMs": 98.28,
+          "headersMs": 98.23,
+          "bodyMs": 0.05,
+          "totalMs": 98.49,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 452.12,
+      "latencyMs": 98.49,
       "questionChecks": {
-        "direction": true
+        "supplier": true
       },
       "correct": true
     },
     {
       "sequence": 22,
-      "repeat": 2,
-      "fixtureId": "courier-2",
-      "kind": "courier",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:02.951401+00:00",
+      "repeat": 1,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:23:54.475198+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "direction": {
+          "supplier": {
             "type": "choice",
-            "choice": "left",
-            "confidence": 0.98,
+            "choice": "Northstar Supply",
+            "confidence": 0.3887,
             "probabilities": {
-              "up": 0.01,
-              "right": 0,
-              "left": 0.99
+              "Harbor Office": 0.1988,
+              "Summit Works": 0.06,
+              "Northstar Supply": 0.7412
             }
           }
         },
-        "latencyMs": 275.26,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
+        "latencyMs": 300.8,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
         "usage": {
-          "input_tokens": 530,
-          "output_tokens": 38,
-          "cost": 2.226e-05
+          "input_tokens": 638,
+          "output_tokens": 0,
+          "cost": 2.4244e-05
         },
-        "requestId": "gen-dec-1791838622-k5U0qNo3uKObnC5Ct12i",
         "timing": {
-          "upstreamMs": 275.09,
-          "headersMs": 274.5,
-          "bodyMs": 0.59,
-          "totalMs": 275.26,
+          "upstreamMs": 300.62,
+          "headersMs": 300.46,
+          "bodyMs": 0.16,
+          "totalMs": 300.8,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 275.26,
+      "latencyMs": 300.8,
       "questionChecks": {
-        "direction": true
+        "supplier": true
       },
       "correct": true
     },
     {
       "sequence": 23,
-      "repeat": 2,
-      "fixtureId": "courier-2",
-      "kind": "courier",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:03.228750+00:00",
+      "repeat": 1,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:23:54.779431+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "direction": {
+          "supplier": {
             "type": "choice",
-            "choice": "left",
+            "choice": "Northstar Supply",
+            "confidence": 1,
+            "probabilities": {
+              "Harbor Office": 0,
+              "Summit Works": 0,
+              "Northstar Supply": 1
+            }
+          }
+        },
+        "latencyMs": 191.46,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 821,
+          "output_tokens": 48,
+          "cost": 3.4482e-05
+        },
+        "timing": {
+          "upstreamMs": 191.3,
+          "headersMs": 190.74,
+          "bodyMs": 0.56,
+          "totalMs": 191.46,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 191.46,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 24,
+      "repeat": 1,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:23:54.974465+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
             "confidence": null,
             "probabilities": null
           }
         },
-        "latencyMs": 962.8,
+        "latencyMs": 2980.16,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
         "upstreamProvider": "OpenAI",
         "usage": {
-          "prompt_tokens": 339,
-          "completion_tokens": 15,
-          "total_tokens": 354,
-          "cost": 4.0986e-05,
+          "prompt_tokens": 589,
+          "completion_tokens": 17,
+          "total_tokens": 606,
+          "cost": 6.6726e-05,
           "is_byok": false,
           "prompt_tokens_details": {
             "cached_tokens": 0,
@@ -1440,9 +1486,9 @@
             "video_tokens": 0
           },
           "cost_details": {
-            "upstream_inference_cost": 4.14e-05,
-            "upstream_inference_prompt_cost": 3.39e-05,
-            "upstream_inference_completions_cost": 7.5e-06
+            "upstream_inference_cost": 6.74e-05,
+            "upstream_inference_prompt_cost": 5.89e-05,
+            "upstream_inference_completions_cost": 8.5e-06
           },
           "completion_tokens_details": {
             "reasoning_tokens": 0,
@@ -1450,844 +1496,124 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838623-AkdVPVOT4JfRpSfltWDk",
         "timing": {
-          "upstreamMs": 962.6,
-          "headersMs": 408.07,
-          "bodyMs": 554.54,
-          "totalMs": 962.8,
+          "upstreamMs": 2979.94,
+          "headersMs": 422.21,
+          "bodyMs": 2557.73,
+          "totalMs": 2980.16,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 962.8,
+      "latencyMs": 2980.16,
       "questionChecks": {
-        "direction": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 24,
-      "repeat": 2,
-      "fixtureId": "courier-2",
-      "kind": "courier",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:04.193783+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "direction": {
-            "type": "choice",
-            "choice": "left",
-            "confidence": 0.8408,
-            "probabilities": {
-              "up": 0.0315,
-              "right": 0.0239,
-              "left": 0.9446
-            }
-          }
-        },
-        "latencyMs": 248.48,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 352,
-          "output_tokens": 0,
-          "cost": 1.3376e-05
-        },
-        "requestId": "gen-dec-1791838624-LLV4Gn9CE5RC74euyFpx",
-        "timing": {
-          "upstreamMs": 248.3,
-          "headersMs": 247.81,
-          "bodyMs": 0.49,
-          "totalMs": 248.48,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 248.48,
-      "questionChecks": {
-        "direction": true
+        "supplier": true
       },
       "correct": true
     },
     {
       "sequence": 25,
       "repeat": 2,
-      "fixtureId": "intake-1",
-      "kind": "intake",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:04.444523+00:00",
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:23:57.958334+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "team": {
+          "direction": {
             "type": "choice",
-            "choice": "Billing",
-            "confidence": 0.92,
+            "choice": "left",
+            "confidence": 0.8806,
             "probabilities": {
-              "Billing": 0.94,
-              "Technical support": 0,
-              "Security": 0.06,
-              "Account access": 0
-            }
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": 0.98,
-            "probabilities": {
-              "Normal": 0.99,
-              "High": 0,
-              "Critical": 0.01
-            }
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Resolve with policy",
-            "confidence": 0.98,
-            "probabilities": {
-              "Resolve with policy": 0.99,
-              "Request details": 0,
-              "Escalate": 0.01
+              "up": 0.0308,
+              "left": 0.9692
             }
           }
         },
-        "latencyMs": 327.13,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
+        "latencyMs": 301.89,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
         "usage": {
-          "input_tokens": 891,
-          "output_tokens": 128,
-          "cost": 3.7422e-05
+          "input_tokens": 333,
+          "output_tokens": 0,
+          "cost": 1.2654e-05
         },
-        "requestId": "gen-dec-1791838624-pmKQpCnx6fvr0gFq9l4t",
         "timing": {
-          "upstreamMs": 326.91,
-          "headersMs": 326.18,
-          "bodyMs": 0.73,
-          "totalMs": 327.13,
+          "upstreamMs": 301.73,
+          "headersMs": 301.1,
+          "bodyMs": 0.63,
+          "totalMs": 301.89,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 327.13,
+      "latencyMs": 301.89,
       "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
+        "direction": true
       },
       "correct": true
     },
     {
       "sequence": 26,
       "repeat": 2,
-      "fixtureId": "intake-1",
-      "kind": "intake",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:04.773962+00:00",
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:23:58.263985+00:00",
       "completed": true,
       "result": {
         "answers": {
-          "team": {
+          "direction": {
             "type": "choice",
-            "choice": "Billing",
-            "confidence": null,
-            "probabilities": null
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": null,
-            "probabilities": null
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Resolve with policy",
-            "confidence": null,
-            "probabilities": null
+            "choice": "left",
+            "confidence": 0.98,
+            "probabilities": {
+              "up": 0.01,
+              "left": 0.99
+            }
           }
         },
-        "latencyMs": 1113.98,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
+        "latencyMs": 188.98,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
         "usage": {
-          "prompt_tokens": 686,
-          "completion_tokens": 27,
-          "total_tokens": 713,
-          "cost": 8.1279e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 8.21e-05,
-            "upstream_inference_prompt_cost": 6.86e-05,
-            "upstream_inference_completions_cost": 1.35e-05
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
+          "input_tokens": 514,
+          "output_tokens": 31,
+          "cost": 2.1588e-05
         },
-        "requestId": "gen-1791838624-XQ4tkzIWTVZTvZW0AZNY",
         "timing": {
-          "upstreamMs": 1113.75,
-          "headersMs": 404.81,
-          "bodyMs": 708.94,
-          "totalMs": 1113.98,
+          "upstreamMs": 188.82,
+          "headersMs": 186.93,
+          "bodyMs": 1.89,
+          "totalMs": 188.98,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
+        "confidenceKind": "native",
+        "transport": "decisions"
       },
-      "latencyMs": 1113.98,
+      "latencyMs": 188.98,
       "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
+        "direction": true
       },
       "correct": true
     },
     {
       "sequence": 27,
       "repeat": 2,
-      "fixtureId": "intake-1",
-      "kind": "intake",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:05.890259+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "team": {
-            "type": "choice",
-            "choice": "Billing",
-            "confidence": 0.8824,
-            "probabilities": {
-              "Billing": 0.9545,
-              "Technical support": 0.0097,
-              "Security": 0.0235,
-              "Account access": 0.0123
-            }
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": 0.4871,
-            "probabilities": {
-              "Normal": 0.7982,
-              "High": 0.0842,
-              "Critical": 0.1176
-            }
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Resolve with policy",
-            "confidence": 0.8722,
-            "probabilities": {
-              "Resolve with policy": 0.9559,
-              "Request details": 0.0239,
-              "Escalate": 0.0202
-            }
-          }
-        },
-        "latencyMs": 462.88,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 745,
-          "output_tokens": 0,
-          "cost": 2.831e-05
-        },
-        "requestId": "gen-dec-1791838625-qIczt3nEESuFgkUogcDD",
-        "timing": {
-          "upstreamMs": 462.66,
-          "headersMs": 462.54,
-          "bodyMs": 0.13,
-          "totalMs": 462.88,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 462.88,
-      "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 28,
-      "repeat": 2,
-      "fixtureId": "intake-2",
-      "kind": "intake",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:06.364289+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "team": {
-            "type": "choice",
-            "choice": "Technical support",
-            "confidence": 0.97,
-            "probabilities": {
-              "Billing": 0,
-              "Technical support": 0.98,
-              "Security": 0.02,
-              "Account access": 0
-            }
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": 1,
-            "probabilities": {
-              "Normal": 1,
-              "High": 0,
-              "Critical": 0
-            }
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Request details",
-            "confidence": 1,
-            "probabilities": {
-              "Resolve with policy": 0,
-              "Request details": 1,
-              "Escalate": 0
-            }
-          }
-        },
-        "latencyMs": 311.87,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 883,
-          "output_tokens": 128,
-          "cost": 3.7086e-05
-        },
-        "requestId": "gen-dec-1791838626-dIMYfStQX2CkbmYE8hm7",
-        "timing": {
-          "upstreamMs": 311.64,
-          "headersMs": 311.46,
-          "bodyMs": 0.18,
-          "totalMs": 311.87,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 311.87,
-      "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 29,
-      "repeat": 2,
-      "fixtureId": "intake-2",
-      "kind": "intake",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:06.678627+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "team": {
-            "type": "choice",
-            "choice": "Technical support",
-            "confidence": null,
-            "probabilities": null
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": null,
-            "probabilities": null
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Request details",
-            "confidence": null,
-            "probabilities": null
-          }
-        },
-        "latencyMs": 1277.2,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
-        "usage": {
-          "prompt_tokens": 681,
-          "completion_tokens": 27,
-          "total_tokens": 708,
-          "cost": 8.0784e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 8.16e-05,
-            "upstream_inference_prompt_cost": 6.81e-05,
-            "upstream_inference_completions_cost": 1.35e-05
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
-        },
-        "requestId": "gen-1791838626-2s4WgRfbCKZoscdg3XU7",
-        "timing": {
-          "upstreamMs": 1276.87,
-          "headersMs": 484.35,
-          "bodyMs": 792.52,
-          "totalMs": 1277.2,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
-      },
-      "latencyMs": 1277.2,
-      "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 30,
-      "repeat": 2,
-      "fixtureId": "intake-2",
-      "kind": "intake",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:07.958362+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "team": {
-            "type": "choice",
-            "choice": "Technical support",
-            "confidence": 0.8201,
-            "probabilities": {
-              "Billing": 0.0205,
-              "Technical support": 0.9292,
-              "Security": 0.0208,
-              "Account access": 0.0295
-            }
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": 0.7289,
-            "probabilities": {
-              "Normal": 0.9025,
-              "High": 0.0514,
-              "Critical": 0.0461
-            }
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Request details",
-            "confidence": 0.8317,
-            "probabilities": {
-              "Resolve with policy": 0.0303,
-              "Request details": 0.9413,
-              "Escalate": 0.0284
-            }
-          }
-        },
-        "latencyMs": 430.1,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 736,
-          "output_tokens": 0,
-          "cost": 2.7968e-05
-        },
-        "requestId": "gen-dec-1791838627-AAyOaC4NrUWfDcKxzfV0",
-        "timing": {
-          "upstreamMs": 429.87,
-          "headersMs": 429.74,
-          "bodyMs": 0.14,
-          "totalMs": 430.1,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 430.1,
-      "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 31,
-      "repeat": 2,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:08.391085+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 1,
-            "probabilities": {
-              "Harbor Office": 0,
-              "Summit Works": 0,
-              "Northstar Supply": 1
-            }
-          }
-        },
-        "latencyMs": 337.48,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 821,
-          "output_tokens": 48,
-          "cost": 3.4482e-05
-        },
-        "requestId": "gen-dec-1791838628-MVUeR255JpYCWJbQZvFe",
-        "timing": {
-          "upstreamMs": 337.31,
-          "headersMs": 337.2,
-          "bodyMs": 0.11,
-          "totalMs": 337.48,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 337.48,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 32,
-      "repeat": 2,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:08.731083+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": null,
-            "probabilities": null
-          }
-        },
-        "latencyMs": 1299.64,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
-        "usage": {
-          "prompt_tokens": 591,
-          "completion_tokens": 17,
-          "total_tokens": 608,
-          "cost": 6.6924e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 6.76e-05,
-            "upstream_inference_prompt_cost": 5.91e-05,
-            "upstream_inference_completions_cost": 8.5e-06
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
-        },
-        "requestId": "gen-1791838628-0mTBL7jlpMJ5zQvKFopi",
-        "timing": {
-          "upstreamMs": 1299.43,
-          "headersMs": 528.27,
-          "bodyMs": 771.17,
-          "totalMs": 1299.64,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
-      },
-      "latencyMs": 1299.64,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 33,
-      "repeat": 2,
-      "fixtureId": "procurement-1",
-      "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:10.033456+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 0.3736,
-            "probabilities": {
-              "Harbor Office": 0.1738,
-              "Summit Works": 0.0884,
-              "Northstar Supply": 0.7378
-            }
-          }
-        },
-        "latencyMs": 568.66,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 637,
-          "output_tokens": 0,
-          "cost": 2.4206e-05
-        },
-        "requestId": "gen-dec-1791838630-SHHfn1RJgWZ1Nj1St5fm",
-        "timing": {
-          "upstreamMs": 568.42,
-          "headersMs": 568.3,
-          "bodyMs": 0.12,
-          "totalMs": 568.66,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 568.66,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 34,
-      "repeat": 2,
-      "fixtureId": "procurement-2",
-      "kind": "procurement",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:10.604828+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 1,
-            "probabilities": {
-              "Harbor Office": 0,
-              "Summit Works": 0,
-              "Northstar Supply": 1
-            }
-          }
-        },
-        "latencyMs": 315.45,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 821,
-          "output_tokens": 48,
-          "cost": 3.4482e-05
-        },
-        "requestId": "gen-dec-1791838630-Z73Zc4wtylVPZC5Aq3uv",
-        "timing": {
-          "upstreamMs": 315.27,
-          "headersMs": 315.14,
-          "bodyMs": 0.13,
-          "totalMs": 315.45,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 315.45,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 35,
-      "repeat": 2,
-      "fixtureId": "procurement-2",
-      "kind": "procurement",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:10.923205+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": null,
-            "probabilities": null
-          }
-        },
-        "latencyMs": 991.25,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
-        "usage": {
-          "prompt_tokens": 589,
-          "completion_tokens": 17,
-          "total_tokens": 606,
-          "cost": 6.6726e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 6.74e-05,
-            "upstream_inference_prompt_cost": 5.89e-05,
-            "upstream_inference_completions_cost": 8.5e-06
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
-        },
-        "requestId": "gen-1791838630-2kc22Ondnv3ODD2crYiv",
-        "timing": {
-          "upstreamMs": 990.93,
-          "headersMs": 809.01,
-          "bodyMs": 181.92,
-          "totalMs": 991.25,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
-      },
-      "latencyMs": 991.25,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 36,
-      "repeat": 2,
-      "fixtureId": "procurement-2",
-      "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:11.917334+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "supplier": {
-            "type": "choice",
-            "choice": "Northstar Supply",
-            "confidence": 0.3887,
-            "probabilities": {
-              "Harbor Office": 0.1988,
-              "Summit Works": 0.06,
-              "Northstar Supply": 0.7412
-            }
-          }
-        },
-        "latencyMs": 280.3,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
-        "usage": {
-          "input_tokens": 638,
-          "output_tokens": 0,
-          "cost": 2.4244e-05
-        },
-        "requestId": "gen-dec-1791838631-2peC28R4vGTEqHRLw5EY",
-        "timing": {
-          "upstreamMs": 280.03,
-          "headersMs": 279.91,
-          "bodyMs": 0.12,
-          "totalMs": 280.3,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 280.3,
-      "questionChecks": {
-        "supplier": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 37,
-      "repeat": 3,
       "fixtureId": "courier-1",
       "kind": "courier",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:12.200574+00:00",
+      "startedAt": "2026-10-12T23:23:58.456572+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -2298,7 +1624,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 865.8,
+        "latencyMs": 861.63,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -2326,79 +1652,124 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838632-7S9Qsd9ZIANhag02ypfg",
         "timing": {
-          "upstreamMs": 865.42,
-          "headersMs": 445.68,
-          "bodyMs": 419.74,
-          "totalMs": 865.8,
+          "upstreamMs": 861.42,
+          "headersMs": 411.09,
+          "bodyMs": 450.33,
+          "totalMs": 861.63,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 865.8,
+      "latencyMs": 861.63,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 38,
-      "repeat": 3,
+      "sequence": 28,
+      "repeat": 2,
       "fixtureId": "courier-1",
       "kind": "courier",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:13.069330+00:00",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:23:59.321977+00:00",
       "completed": true,
       "result": {
         "answers": {
           "direction": {
             "type": "choice",
             "choice": "left",
-            "confidence": 0.8806,
+            "confidence": 0.9557668223958411,
             "probabilities": {
-              "up": 0.0308,
-              "left": 0.9692
+              "up": 0.022116588802079524,
+              "left": 0.9778834111979205
             }
           }
         },
-        "latencyMs": 438.12,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
+        "latencyMs": 60.9,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
           "input_tokens": 333,
-          "output_tokens": 0,
-          "cost": 1.2654e-05
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838633-nXHqbpCcruL8W64ZTFB1",
         "timing": {
-          "upstreamMs": 437.86,
-          "headersMs": 437.74,
-          "bodyMs": 0.12,
-          "totalMs": 438.12,
+          "upstreamMs": 60.72,
+          "headersMs": 60.67,
+          "bodyMs": 0.05,
+          "totalMs": 60.9,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 438.12,
+      "latencyMs": 60.9,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 39,
-      "repeat": 3,
-      "fixtureId": "courier-1",
+      "sequence": 29,
+      "repeat": 2,
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:23:59.386515+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.8408,
+            "probabilities": {
+              "up": 0.0315,
+              "right": 0.0239,
+              "left": 0.9446
+            }
+          }
+        },
+        "latencyMs": 251.7,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 352,
+          "output_tokens": 0,
+          "cost": 1.3376e-05
+        },
+        "timing": {
+          "upstreamMs": 251.54,
+          "headersMs": 251.39,
+          "bodyMs": 0.16,
+          "totalMs": 251.7,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 251.7,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 30,
+      "repeat": 2,
+      "fixtureId": "courier-2",
       "kind": "courier",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:13.510723+00:00",
+      "startedAt": "2026-10-12T23:23:59.641885+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -2408,45 +1779,45 @@
             "confidence": 0.98,
             "probabilities": {
               "up": 0.01,
+              "right": 0,
               "left": 0.99
             }
           }
         },
-        "latencyMs": 288.45,
+        "latencyMs": 153.14,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
         "upstreamProvider": "TypeSafe",
         "usage": {
-          "input_tokens": 514,
-          "output_tokens": 31,
-          "cost": 2.1588e-05
+          "input_tokens": 530,
+          "output_tokens": 38,
+          "cost": 2.226e-05
         },
-        "requestId": "gen-dec-1791838633-vIHaK1pu5ZtY0W8WNNSo",
         "timing": {
-          "upstreamMs": 288.23,
-          "headersMs": 288.04,
-          "bodyMs": 0.2,
-          "totalMs": 288.45,
+          "upstreamMs": 152.98,
+          "headersMs": 152.8,
+          "bodyMs": 0.18,
+          "totalMs": 153.14,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 288.45,
+      "latencyMs": 153.14,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 40,
-      "repeat": 3,
+      "sequence": 31,
+      "repeat": 2,
       "fixtureId": "courier-2",
       "kind": "courier",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:13.802608+00:00",
+      "startedAt": "2026-10-12T23:23:59.798841+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -2457,7 +1828,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1171.91,
+        "latencyMs": 977.28,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -2485,206 +1856,77 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838633-4QYkY5QN21wnfDdXbhsl",
         "timing": {
-          "upstreamMs": 1171.55,
-          "headersMs": 437.14,
-          "bodyMs": 734.41,
-          "totalMs": 1171.91,
+          "upstreamMs": 977.06,
+          "headersMs": 427.5,
+          "bodyMs": 549.56,
+          "totalMs": 977.28,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1171.91,
+      "latencyMs": 977.28,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 41,
-      "repeat": 3,
+      "sequence": 32,
+      "repeat": 2,
       "fixtureId": "courier-2",
       "kind": "courier",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:14.977956+00:00",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:00.779952+00:00",
       "completed": true,
       "result": {
         "answers": {
           "direction": {
             "type": "choice",
             "choice": "left",
-            "confidence": 0.8408,
+            "confidence": 0.9443101785727475,
             "probabilities": {
-              "up": 0.0315,
-              "right": 0.0239,
-              "left": 0.9446
+              "up": 0.020298500034326167,
+              "right": 0.01682804758384225,
+              "left": 0.9628734523818316
             }
           }
         },
-        "latencyMs": 447.4,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
+        "latencyMs": 61.53,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
           "input_tokens": 352,
-          "output_tokens": 0,
-          "cost": 1.3376e-05
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838635-bgdU5shfNcva75TpS1wA",
         "timing": {
-          "upstreamMs": 447.18,
-          "headersMs": 447.06,
-          "bodyMs": 0.12,
-          "totalMs": 447.4,
+          "upstreamMs": 61.36,
+          "headersMs": 61.3,
+          "bodyMs": 0.06,
+          "totalMs": 61.53,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 447.4,
+      "latencyMs": 61.53,
       "questionChecks": {
         "direction": true
       },
       "correct": true
     },
     {
-      "sequence": 42,
-      "repeat": 3,
-      "fixtureId": "courier-2",
-      "kind": "courier",
-      "provider": "jev",
-      "startedAt": "2026-10-12T20:57:15.428565+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "direction": {
-            "type": "choice",
-            "choice": "left",
-            "confidence": 0.98,
-            "probabilities": {
-              "up": 0.01,
-              "right": 0,
-              "left": 0.99
-            }
-          }
-        },
-        "latencyMs": 337.81,
-        "provider": "jev",
-        "model": "typesafe/jev-1.13-20260917",
-        "requestedModel": "typesafe/jev-1.13",
-        "upstreamProvider": "TypeSafe",
-        "usage": {
-          "input_tokens": 530,
-          "output_tokens": 38,
-          "cost": 2.226e-05
-        },
-        "requestId": "gen-dec-1791838635-OMOvNiaAkGCmVXr5uLTH",
-        "timing": {
-          "upstreamMs": 337.48,
-          "headersMs": 337.36,
-          "bodyMs": 0.12,
-          "totalMs": 337.81,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "native",
-        "transport": "decisions"
-      },
-      "latencyMs": 337.81,
-      "questionChecks": {
-        "direction": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 43,
-      "repeat": 3,
-      "fixtureId": "intake-1",
-      "kind": "intake",
-      "provider": "luna",
-      "startedAt": "2026-10-12T20:57:15.769510+00:00",
-      "completed": true,
-      "result": {
-        "answers": {
-          "team": {
-            "type": "choice",
-            "choice": "Billing",
-            "confidence": null,
-            "probabilities": null
-          },
-          "urgency": {
-            "type": "choice",
-            "choice": "Normal",
-            "confidence": null,
-            "probabilities": null
-          },
-          "disposition": {
-            "type": "choice",
-            "choice": "Resolve with policy",
-            "confidence": null,
-            "probabilities": null
-          }
-        },
-        "latencyMs": 1078.0,
-        "provider": "luna",
-        "model": "openai/gpt-6-luna",
-        "requestedModel": "openai/gpt-6-luna",
-        "upstreamProvider": "OpenAI",
-        "usage": {
-          "prompt_tokens": 686,
-          "completion_tokens": 27,
-          "total_tokens": 713,
-          "cost": 8.1279e-05,
-          "is_byok": false,
-          "prompt_tokens_details": {
-            "cached_tokens": 0,
-            "cache_write_tokens": 0,
-            "audio_tokens": 0,
-            "video_tokens": 0
-          },
-          "cost_details": {
-            "upstream_inference_cost": 8.21e-05,
-            "upstream_inference_prompt_cost": 6.86e-05,
-            "upstream_inference_completions_cost": 1.35e-05
-          },
-          "completion_tokens_details": {
-            "reasoning_tokens": 0,
-            "image_tokens": 0,
-            "audio_tokens": 0
-          }
-        },
-        "requestId": "gen-1791838635-EtI5djILrhwTY9PJlAWI",
-        "timing": {
-          "upstreamMs": 1077.56,
-          "headersMs": 470.58,
-          "bodyMs": 606.98,
-          "totalMs": 1078.0,
-          "measurement": "server wall time; includes upstream network, routing, and inference",
-          "cachedLocally": false
-        },
-        "confidenceKind": "unavailable",
-        "transport": "chat"
-      },
-      "latencyMs": 1078.0,
-      "questionChecks": {
-        "team": true,
-        "urgency": true,
-        "disposition": true
-      },
-      "correct": true
-    },
-    {
-      "sequence": 44,
-      "repeat": 3,
+      "sequence": 33,
+      "repeat": 2,
       "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:57:16.850715+00:00",
+      "startedAt": "2026-10-12T23:24:00.845205+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -2720,7 +1962,7 @@
             }
           }
         },
-        "latencyMs": 428.53,
+        "latencyMs": 317.67,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -2730,19 +1972,18 @@
           "output_tokens": 0,
           "cost": 2.831e-05
         },
-        "requestId": "gen-dec-1791838636-8anaG2z1XVISvYKdyB8R",
         "timing": {
-          "upstreamMs": 428.18,
-          "headersMs": 428.04,
-          "bodyMs": 0.14,
-          "totalMs": 428.53,
+          "upstreamMs": 317.48,
+          "headersMs": 317.31,
+          "bodyMs": 0.17,
+          "totalMs": 317.67,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 428.53,
+      "latencyMs": 317.67,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -2751,23 +1992,23 @@
       "correct": true
     },
     {
-      "sequence": 45,
-      "repeat": 3,
+      "sequence": 34,
+      "repeat": 2,
       "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:17.297706+00:00",
+      "startedAt": "2026-10-12T23:24:01.166784+00:00",
       "completed": true,
       "result": {
         "answers": {
           "team": {
             "type": "choice",
             "choice": "Billing",
-            "confidence": 0.93,
+            "confidence": 0.95,
             "probabilities": {
-              "Billing": 0.95,
+              "Billing": 0.96,
               "Technical support": 0,
-              "Security": 0.05,
+              "Security": 0.04,
               "Account access": 0
             }
           },
@@ -2784,15 +2025,15 @@
           "disposition": {
             "type": "choice",
             "choice": "Resolve with policy",
-            "confidence": 0.98,
+            "confidence": 1,
             "probabilities": {
-              "Resolve with policy": 0.99,
+              "Resolve with policy": 1,
               "Request details": 0,
-              "Escalate": 0.01
+              "Escalate": 0
             }
           }
         },
-        "latencyMs": 311.74,
+        "latencyMs": 187.26,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -2802,19 +2043,18 @@
           "output_tokens": 128,
           "cost": 3.7422e-05
         },
-        "requestId": "gen-dec-1791838637-VjIKAUi0K17prFOIhslu",
         "timing": {
-          "upstreamMs": 311.32,
-          "headersMs": 311.18,
-          "bodyMs": 0.14,
-          "totalMs": 311.74,
+          "upstreamMs": 187.06,
+          "headersMs": 186.9,
+          "bodyMs": 0.17,
+          "totalMs": 187.26,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 311.74,
+      "latencyMs": 187.26,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -2823,18 +2063,18 @@
       "correct": true
     },
     {
-      "sequence": 46,
-      "repeat": 3,
-      "fixtureId": "intake-2",
+      "sequence": 35,
+      "repeat": 2,
+      "fixtureId": "intake-1",
       "kind": "intake",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:17.613290+00:00",
+      "startedAt": "2026-10-12T23:24:01.358411+00:00",
       "completed": true,
       "result": {
         "answers": {
           "team": {
             "type": "choice",
-            "choice": "Technical support",
+            "choice": "Billing",
             "confidence": null,
             "probabilities": null
           },
@@ -2846,21 +2086,21 @@
           },
           "disposition": {
             "type": "choice",
-            "choice": "Request details",
+            "choice": "Resolve with policy",
             "confidence": null,
             "probabilities": null
           }
         },
-        "latencyMs": 2083.77,
+        "latencyMs": 950.33,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
         "upstreamProvider": "OpenAI",
         "usage": {
-          "prompt_tokens": 681,
+          "prompt_tokens": 686,
           "completion_tokens": 27,
-          "total_tokens": 708,
-          "cost": 8.0784e-05,
+          "total_tokens": 713,
+          "cost": 8.1279e-05,
           "is_byok": false,
           "prompt_tokens_details": {
             "cached_tokens": 0,
@@ -2869,8 +2109,8 @@
             "video_tokens": 0
           },
           "cost_details": {
-            "upstream_inference_cost": 8.16e-05,
-            "upstream_inference_prompt_cost": 6.81e-05,
+            "upstream_inference_cost": 8.21e-05,
+            "upstream_inference_prompt_cost": 6.86e-05,
             "upstream_inference_completions_cost": 1.35e-05
           },
           "completion_tokens_details": {
@@ -2879,19 +2119,18 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838637-CUqvjXtD40OsuRkd8FtP",
         "timing": {
-          "upstreamMs": 2083.47,
-          "headersMs": 461.33,
-          "bodyMs": 1622.14,
-          "totalMs": 2083.77,
+          "upstreamMs": 950.11,
+          "headersMs": 300.83,
+          "bodyMs": 649.29,
+          "totalMs": 950.33,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 2083.77,
+      "latencyMs": 950.33,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -2900,12 +2139,82 @@
       "correct": true
     },
     {
-      "sequence": 47,
-      "repeat": 3,
+      "sequence": 36,
+      "repeat": 2,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:02.312793+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": 0.9712260027880196,
+            "probabilities": {
+              "Billing": 0.9784195020910146,
+              "Technical support": 0.0060496536157596936,
+              "Security": 0.009667318951761388,
+              "Account access": 0.0058635253414642775
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.7179822250901253,
+            "probabilities": {
+              "Normal": 0.8119881500600836,
+              "High": 0.09253720191534545,
+              "Critical": 0.09547464802457101
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": 0.9457768042478145,
+            "probabilities": {
+              "Resolve with policy": 0.9638512028318764,
+              "Request details": 0.0183567880813957,
+              "Escalate": 0.01779200908672796
+            }
+          }
+        },
+        "latencyMs": 113.91,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 745,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 113.67,
+          "headersMs": 113.61,
+          "bodyMs": 0.06,
+          "totalMs": 113.91,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 113.91,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 37,
+      "repeat": 2,
       "fixtureId": "intake-2",
       "kind": "intake",
       "provider": "clef",
-      "startedAt": "2026-10-12T20:57:19.700576+00:00",
+      "startedAt": "2026-10-12T23:24:02.430790+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -2941,7 +2250,7 @@
             }
           }
         },
-        "latencyMs": 451.51,
+        "latencyMs": 381.02,
         "provider": "clef",
         "model": "cloudflare/clef-flash",
         "requestedModel": "cloudflare/clef-flash",
@@ -2951,19 +2260,18 @@
           "output_tokens": 0,
           "cost": 2.7968e-05
         },
-        "requestId": "gen-dec-1791838639-I8xARCuo92EDV7yYrEAb",
         "timing": {
-          "upstreamMs": 451.3,
-          "headersMs": 451.13,
-          "bodyMs": 0.17,
-          "totalMs": 451.51,
+          "upstreamMs": 380.79,
+          "headersMs": 380.59,
+          "bodyMs": 0.2,
+          "totalMs": 381.02,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 451.51,
+      "latencyMs": 381.02,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -2972,12 +2280,12 @@
       "correct": true
     },
     {
-      "sequence": 48,
-      "repeat": 3,
+      "sequence": 38,
+      "repeat": 2,
       "fixtureId": "intake-2",
       "kind": "intake",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:20.155583+00:00",
+      "startedAt": "2026-10-12T23:24:02.817938+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -3013,7 +2321,7 @@
             }
           }
         },
-        "latencyMs": 263.36,
+        "latencyMs": 218.54,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -3023,19 +2331,18 @@
           "output_tokens": 128,
           "cost": 3.7086e-05
         },
-        "requestId": "gen-dec-1791838640-8KKnSfkckli4ogfyDxdr",
         "timing": {
-          "upstreamMs": 263.15,
-          "headersMs": 263.0,
-          "bodyMs": 0.15,
-          "totalMs": 263.36,
+          "upstreamMs": 218.36,
+          "headersMs": 218.2,
+          "bodyMs": 0.16,
+          "totalMs": 218.54,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 263.36,
+      "latencyMs": 218.54,
       "questionChecks": {
         "team": true,
         "urgency": true,
@@ -3044,12 +2351,254 @@
       "correct": true
     },
     {
-      "sequence": 49,
-      "repeat": 3,
+      "sequence": 39,
+      "repeat": 2,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:03.041188+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": null,
+            "probabilities": null
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": null,
+            "probabilities": null
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 1001.32,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 681,
+          "completion_tokens": 27,
+          "total_tokens": 708,
+          "cost": 8.0784e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 8.16e-05,
+            "upstream_inference_prompt_cost": 6.81e-05,
+            "upstream_inference_completions_cost": 1.35e-05
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 1001.09,
+          "headersMs": 337.13,
+          "bodyMs": 663.96,
+          "totalMs": 1001.32,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 1001.32,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 40,
+      "repeat": 2,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:04.046792+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": 0.9238645655191511,
+            "probabilities": {
+              "Billing": 0.018098581430210574,
+              "Technical support": 0.9428984241393632,
+              "Security": 0.016478945918487004,
+              "Account access": 0.022524048511939114
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.9023373746421588,
+            "probabilities": {
+              "Normal": 0.9348915830947726,
+              "High": 0.03858758407561322,
+              "Critical": 0.026520832829614212
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": 0.9461910174845614,
+            "probabilities": {
+              "Resolve with policy": 0.020166763671169586,
+              "Request details": 0.9641273449897075,
+              "Escalate": 0.015705891339122834
+            }
+          }
+        },
+        "latencyMs": 113.74,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 736,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 113.51,
+          "headersMs": 113.45,
+          "bodyMs": 0.06,
+          "totalMs": 113.74,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 113.74,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 41,
+      "repeat": 2,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:04.164829+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.3736,
+            "probabilities": {
+              "Harbor Office": 0.1738,
+              "Summit Works": 0.0884,
+              "Northstar Supply": 0.7378
+            }
+          }
+        },
+        "latencyMs": 306.21,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 637,
+          "output_tokens": 0,
+          "cost": 2.4206e-05
+        },
+        "timing": {
+          "upstreamMs": 306.03,
+          "headersMs": 305.85,
+          "bodyMs": 0.17,
+          "totalMs": 306.21,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 306.21,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 42,
+      "repeat": 2,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:04.475183+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 1,
+            "probabilities": {
+              "Harbor Office": 0,
+              "Summit Works": 0,
+              "Northstar Supply": 1
+            }
+          }
+        },
+        "latencyMs": 178.29,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 821,
+          "output_tokens": 48,
+          "cost": 3.4482e-05
+        },
+        "timing": {
+          "upstreamMs": 178.12,
+          "headersMs": 177.96,
+          "bodyMs": 0.15,
+          "totalMs": 178.29,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 178.29,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 43,
+      "repeat": 2,
       "fixtureId": "procurement-1",
       "kind": "procurement",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:20.422534+00:00",
+      "startedAt": "2026-10-12T23:24:04.657827+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -3060,7 +2609,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1386.31,
+        "latencyMs": 774.64,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -3088,80 +2637,125 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838640-FJkLAB0N1WiIj7VR1SGT",
         "timing": {
-          "upstreamMs": 1386.07,
-          "headersMs": 459.45,
-          "bodyMs": 926.62,
-          "totalMs": 1386.31,
+          "upstreamMs": 774.43,
+          "headersMs": 311.25,
+          "bodyMs": 463.18,
+          "totalMs": 774.64,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1386.31,
+      "latencyMs": 774.64,
       "questionChecks": {
         "supplier": true
       },
       "correct": true
     },
     {
-      "sequence": 50,
-      "repeat": 3,
+      "sequence": 44,
+      "repeat": 2,
       "fixtureId": "procurement-1",
       "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:21.813084+00:00",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:05.436802+00:00",
       "completed": true,
       "result": {
         "answers": {
           "supplier": {
             "type": "choice",
             "choice": "Northstar Supply",
-            "confidence": 0.3736,
+            "confidence": 0.6533269566156323,
             "probabilities": {
-              "Harbor Office": 0.1738,
-              "Summit Works": 0.0884,
-              "Northstar Supply": 0.7378
+              "Harbor Office": 0.15378660233390049,
+              "Summit Works": 0.07732875992234477,
+              "Northstar Supply": 0.7688846377437548
             }
           }
         },
-        "latencyMs": 605.32,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
+        "latencyMs": 97.16,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
           "input_tokens": 637,
-          "output_tokens": 0,
-          "cost": 2.4206e-05
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838641-BvoqfOKvNJiKe9CnzTOq",
         "timing": {
-          "upstreamMs": 604.98,
-          "headersMs": 604.86,
-          "bodyMs": 0.12,
-          "totalMs": 605.32,
+          "upstreamMs": 96.95,
+          "headersMs": 96.89,
+          "bodyMs": 0.06,
+          "totalMs": 97.16,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 605.32,
+      "latencyMs": 97.16,
       "questionChecks": {
         "supplier": true
       },
       "correct": true
     },
     {
-      "sequence": 51,
-      "repeat": 3,
-      "fixtureId": "procurement-1",
+      "sequence": 45,
+      "repeat": 2,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:05.538333+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.3887,
+            "probabilities": {
+              "Harbor Office": 0.1988,
+              "Summit Works": 0.06,
+              "Northstar Supply": 0.7412
+            }
+          }
+        },
+        "latencyMs": 291.89,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 638,
+          "output_tokens": 0,
+          "cost": 2.4244e-05
+        },
+        "timing": {
+          "upstreamMs": 291.71,
+          "headersMs": 291.55,
+          "bodyMs": 0.16,
+          "totalMs": 291.89,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 291.89,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 46,
+      "repeat": 2,
+      "fixtureId": "procurement-2",
       "kind": "procurement",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:22.422096+00:00",
+      "startedAt": "2026-10-12T23:24:05.834526+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -3176,7 +2770,7 @@
             }
           }
         },
-        "latencyMs": 328.83,
+        "latencyMs": 202.18,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -3186,31 +2780,30 @@
           "output_tokens": 48,
           "cost": 3.4482e-05
         },
-        "requestId": "gen-dec-1791838642-hyLZpdd3m4NmWbrGRLOH",
         "timing": {
-          "upstreamMs": 328.57,
-          "headersMs": 328.37,
-          "bodyMs": 0.2,
-          "totalMs": 328.83,
+          "upstreamMs": 202.0,
+          "headersMs": 201.84,
+          "bodyMs": 0.16,
+          "totalMs": 202.18,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 328.83,
+      "latencyMs": 202.18,
       "questionChecks": {
         "supplier": true
       },
       "correct": true
     },
     {
-      "sequence": 52,
-      "repeat": 3,
+      "sequence": 47,
+      "repeat": 2,
       "fixtureId": "procurement-2",
       "kind": "procurement",
       "provider": "luna",
-      "startedAt": "2026-10-12T20:57:22.754592+00:00",
+      "startedAt": "2026-10-12T23:24:06.041101+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -3221,7 +2814,7 @@
             "probabilities": null
           }
         },
-        "latencyMs": 1222.94,
+        "latencyMs": 982.14,
         "provider": "luna",
         "model": "openai/gpt-6-luna",
         "requestedModel": "openai/gpt-6-luna",
@@ -3249,80 +2842,1060 @@
             "audio_tokens": 0
           }
         },
-        "requestId": "gen-1791838642-qpSDQ03MK2MxRo7btD6u",
         "timing": {
-          "upstreamMs": 1222.55,
-          "headersMs": 532.09,
-          "bodyMs": 690.45,
-          "totalMs": 1222.94,
+          "upstreamMs": 981.92,
+          "headersMs": 431.03,
+          "bodyMs": 550.9,
+          "totalMs": 982.14,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "unavailable",
         "transport": "chat"
       },
-      "latencyMs": 1222.94,
+      "latencyMs": 982.14,
       "questionChecks": {
         "supplier": true
       },
       "correct": true
     },
     {
-      "sequence": 53,
-      "repeat": 3,
+      "sequence": 48,
+      "repeat": 2,
       "fixtureId": "procurement-2",
       "kind": "procurement",
-      "provider": "clef",
-      "startedAt": "2026-10-12T20:57:23.981361+00:00",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:07.027730+00:00",
       "completed": true,
       "result": {
         "answers": {
           "supplier": {
             "type": "choice",
             "choice": "Northstar Supply",
-            "confidence": 0.3887,
+            "confidence": 0.4821949002816325,
             "probabilities": {
-              "Harbor Office": 0.1988,
-              "Summit Works": 0.06,
-              "Northstar Supply": 0.7412
+              "Harbor Office": 0.27725832514251014,
+              "Summit Works": 0.0679450746697349,
+              "Northstar Supply": 0.654796600187755
             }
           }
         },
-        "latencyMs": 280.56,
-        "provider": "clef",
-        "model": "cloudflare/clef-flash",
-        "requestedModel": "cloudflare/clef-flash",
-        "upstreamProvider": "Cloudflare",
+        "latencyMs": 99.68,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
         "usage": {
           "input_tokens": 638,
-          "output_tokens": 0,
-          "cost": 2.4244e-05
+          "output_tokens": 0
         },
-        "requestId": "gen-dec-1791838644-rj93CeMHAgp5a2x3tqAa",
         "timing": {
-          "upstreamMs": 279.89,
-          "headersMs": 279.75,
-          "bodyMs": 0.14,
-          "totalMs": 280.56,
+          "upstreamMs": 99.47,
+          "headersMs": 99.41,
+          "bodyMs": 0.06,
+          "totalMs": 99.68,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 280.56,
+      "latencyMs": 99.68,
       "questionChecks": {
         "supplier": true
       },
       "correct": true
     },
     {
+      "sequence": 49,
+      "repeat": 3,
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:07.131848+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.98,
+            "probabilities": {
+              "up": 0.01,
+              "left": 0.99
+            }
+          }
+        },
+        "latencyMs": 205.05,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 514,
+          "output_tokens": 31,
+          "cost": 2.1588e-05
+        },
+        "timing": {
+          "upstreamMs": 204.88,
+          "headersMs": 204.73,
+          "bodyMs": 0.16,
+          "totalMs": 205.05,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 205.05,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 50,
+      "repeat": 3,
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:07.341471+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 803.36,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 328,
+          "completion_tokens": 15,
+          "total_tokens": 343,
+          "cost": 3.9897e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 4.03e-05,
+            "upstream_inference_prompt_cost": 3.28e-05,
+            "upstream_inference_completions_cost": 7.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 803.16,
+          "headersMs": 313.32,
+          "bodyMs": 489.83,
+          "totalMs": 803.36,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 803.36,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 51,
+      "repeat": 3,
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:08.149363+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.9557668223958411,
+            "probabilities": {
+              "up": 0.022116588802079524,
+              "left": 0.9778834111979205
+            }
+          }
+        },
+        "latencyMs": 61.3,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 333,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 61.11,
+          "headersMs": 61.06,
+          "bodyMs": 0.05,
+          "totalMs": 61.3,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 61.3,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 52,
+      "repeat": 3,
+      "fixtureId": "courier-1",
+      "kind": "courier",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:08.215017+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.8806,
+            "probabilities": {
+              "up": 0.0308,
+              "left": 0.9692
+            }
+          }
+        },
+        "latencyMs": 312.31,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 333,
+          "output_tokens": 0,
+          "cost": 1.2654e-05
+        },
+        "timing": {
+          "upstreamMs": 312.15,
+          "headersMs": 311.99,
+          "bodyMs": 0.16,
+          "totalMs": 312.31,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 312.31,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 53,
+      "repeat": 3,
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:08.531773+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.98,
+            "probabilities": {
+              "up": 0.01,
+              "right": 0,
+              "left": 0.99
+            }
+          }
+        },
+        "latencyMs": 214.78,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 530,
+          "output_tokens": 38,
+          "cost": 2.226e-05
+        },
+        "timing": {
+          "upstreamMs": 214.61,
+          "headersMs": 214.45,
+          "bodyMs": 0.16,
+          "totalMs": 214.78,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 214.78,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
       "sequence": 54,
       "repeat": 3,
-      "fixtureId": "procurement-2",
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:08.751089+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 1230.01,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 339,
+          "completion_tokens": 15,
+          "total_tokens": 354,
+          "cost": 4.0986e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 4.14e-05,
+            "upstream_inference_prompt_cost": 3.39e-05,
+            "upstream_inference_completions_cost": 7.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 1229.8,
+          "headersMs": 668.44,
+          "bodyMs": 561.35,
+          "totalMs": 1230.01,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 1230.01,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 55,
+      "repeat": 3,
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:09.987617+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.9443101785727475,
+            "probabilities": {
+              "up": 0.020298500034326167,
+              "right": 0.01682804758384225,
+              "left": 0.9628734523818316
+            }
+          }
+        },
+        "latencyMs": 61.91,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 352,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 61.67,
+          "headersMs": 61.62,
+          "bodyMs": 0.04,
+          "totalMs": 61.91,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 61.91,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 56,
+      "repeat": 3,
+      "fixtureId": "courier-2",
+      "kind": "courier",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:10.054371+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "direction": {
+            "type": "choice",
+            "choice": "left",
+            "confidence": 0.8408,
+            "probabilities": {
+              "up": 0.0315,
+              "right": 0.0239,
+              "left": 0.9446
+            }
+          }
+        },
+        "latencyMs": 295.39,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 352,
+          "output_tokens": 0,
+          "cost": 1.3376e-05
+        },
+        "timing": {
+          "upstreamMs": 295.24,
+          "headersMs": 295.08,
+          "bodyMs": 0.16,
+          "totalMs": 295.39,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 295.39,
+      "questionChecks": {
+        "direction": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 57,
+      "repeat": 3,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:10.354889+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": 0.96,
+            "probabilities": {
+              "Billing": 0.97,
+              "Technical support": 0,
+              "Security": 0.03,
+              "Account access": 0
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 1,
+            "probabilities": {
+              "Normal": 1,
+              "High": 0,
+              "Critical": 0
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": 0.98,
+            "probabilities": {
+              "Resolve with policy": 0.99,
+              "Request details": 0,
+              "Escalate": 0.01
+            }
+          }
+        },
+        "latencyMs": 179.62,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 891,
+          "output_tokens": 128,
+          "cost": 3.7422e-05
+        },
+        "timing": {
+          "upstreamMs": 179.41,
+          "headersMs": 179.24,
+          "bodyMs": 0.16,
+          "totalMs": 179.62,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 179.62,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 58,
+      "repeat": 3,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:10.539317+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": null,
+            "probabilities": null
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": null,
+            "probabilities": null
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 842.95,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 686,
+          "completion_tokens": 27,
+          "total_tokens": 713,
+          "cost": 8.1279e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 8.21e-05,
+            "upstream_inference_prompt_cost": 6.86e-05,
+            "upstream_inference_completions_cost": 1.35e-05
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 842.73,
+          "headersMs": 327.3,
+          "bodyMs": 515.43,
+          "totalMs": 842.95,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 842.95,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 59,
+      "repeat": 3,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:11.387133+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": 0.9712260027880196,
+            "probabilities": {
+              "Billing": 0.9784195020910146,
+              "Technical support": 0.0060496536157596936,
+              "Security": 0.009667318951761388,
+              "Account access": 0.0058635253414642775
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.7179822250901253,
+            "probabilities": {
+              "Normal": 0.8119881500600836,
+              "High": 0.09253720191534545,
+              "Critical": 0.09547464802457101
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": 0.9457768042478145,
+            "probabilities": {
+              "Resolve with policy": 0.9638512028318764,
+              "Request details": 0.0183567880813957,
+              "Escalate": 0.01779200908672796
+            }
+          }
+        },
+        "latencyMs": 112.81,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 745,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 112.59,
+          "headersMs": 112.53,
+          "bodyMs": 0.06,
+          "totalMs": 112.81,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 112.81,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 60,
+      "repeat": 3,
+      "fixtureId": "intake-1",
+      "kind": "intake",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:11.505030+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Billing",
+            "confidence": 0.8824,
+            "probabilities": {
+              "Billing": 0.9545,
+              "Technical support": 0.0097,
+              "Security": 0.0235,
+              "Account access": 0.0123
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.4871,
+            "probabilities": {
+              "Normal": 0.7982,
+              "High": 0.0842,
+              "Critical": 0.1176
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Resolve with policy",
+            "confidence": 0.8722,
+            "probabilities": {
+              "Resolve with policy": 0.9559,
+              "Request details": 0.0239,
+              "Escalate": 0.0202
+            }
+          }
+        },
+        "latencyMs": 344.72,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 745,
+          "output_tokens": 0,
+          "cost": 2.831e-05
+        },
+        "timing": {
+          "upstreamMs": 344.52,
+          "headersMs": 344.34,
+          "bodyMs": 0.18,
+          "totalMs": 344.72,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 344.72,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 61,
+      "repeat": 3,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:11.854647+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": 0.96,
+            "probabilities": {
+              "Billing": 0,
+              "Technical support": 0.97,
+              "Security": 0.03,
+              "Account access": 0
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 1,
+            "probabilities": {
+              "Normal": 1,
+              "High": 0,
+              "Critical": 0
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": 1,
+            "probabilities": {
+              "Resolve with policy": 0,
+              "Request details": 1,
+              "Escalate": 0
+            }
+          }
+        },
+        "latencyMs": 243.87,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 883,
+          "output_tokens": 128,
+          "cost": 3.7086e-05
+        },
+        "timing": {
+          "upstreamMs": 243.66,
+          "headersMs": 243.2,
+          "bodyMs": 0.47,
+          "totalMs": 243.87,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 243.87,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 62,
+      "repeat": 3,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:12.103352+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": null,
+            "probabilities": null
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": null,
+            "probabilities": null
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 1047.78,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 681,
+          "completion_tokens": 27,
+          "total_tokens": 708,
+          "cost": 8.0784e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 8.16e-05,
+            "upstream_inference_prompt_cost": 6.81e-05,
+            "upstream_inference_completions_cost": 1.35e-05
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 1047.5,
+          "headersMs": 298.33,
+          "bodyMs": 749.17,
+          "totalMs": 1047.78,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 1047.78,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 63,
+      "repeat": 3,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:13.156436+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": 0.9238645655191511,
+            "probabilities": {
+              "Billing": 0.018098581430210574,
+              "Technical support": 0.9428984241393632,
+              "Security": 0.016478945918487004,
+              "Account access": 0.022524048511939114
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.9023373746421588,
+            "probabilities": {
+              "Normal": 0.9348915830947726,
+              "High": 0.03858758407561322,
+              "Critical": 0.026520832829614212
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": 0.9461910174845614,
+            "probabilities": {
+              "Resolve with policy": 0.020166763671169586,
+              "Request details": 0.9641273449897075,
+              "Escalate": 0.015705891339122834
+            }
+          }
+        },
+        "latencyMs": 111.95,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 736,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 111.74,
+          "headersMs": 111.68,
+          "bodyMs": 0.06,
+          "totalMs": 111.95,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 111.95,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 64,
+      "repeat": 3,
+      "fixtureId": "intake-2",
+      "kind": "intake",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:13.273462+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "team": {
+            "type": "choice",
+            "choice": "Technical support",
+            "confidence": 0.8201,
+            "probabilities": {
+              "Billing": 0.0205,
+              "Technical support": 0.9292,
+              "Security": 0.0208,
+              "Account access": 0.0295
+            }
+          },
+          "urgency": {
+            "type": "choice",
+            "choice": "Normal",
+            "confidence": 0.7289,
+            "probabilities": {
+              "Normal": 0.9025,
+              "High": 0.0514,
+              "Critical": 0.0461
+            }
+          },
+          "disposition": {
+            "type": "choice",
+            "choice": "Request details",
+            "confidence": 0.8317,
+            "probabilities": {
+              "Resolve with policy": 0.0303,
+              "Request details": 0.9413,
+              "Escalate": 0.0284
+            }
+          }
+        },
+        "latencyMs": 353.31,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 736,
+          "output_tokens": 0,
+          "cost": 2.7968e-05
+        },
+        "timing": {
+          "upstreamMs": 353.12,
+          "headersMs": 352.95,
+          "bodyMs": 0.16,
+          "totalMs": 353.31,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 353.31,
+      "questionChecks": {
+        "team": true,
+        "urgency": true,
+        "disposition": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 65,
+      "repeat": 3,
+      "fixtureId": "procurement-1",
       "kind": "procurement",
       "provider": "jev",
-      "startedAt": "2026-10-12T20:57:24.265645+00:00",
+      "startedAt": "2026-10-12T23:24:13.631818+00:00",
       "completed": true,
       "result": {
         "answers": {
@@ -3337,7 +3910,7 @@
             }
           }
         },
-        "latencyMs": 320.74,
+        "latencyMs": 267.19,
         "provider": "jev",
         "model": "typesafe/jev-1.13-20260917",
         "requestedModel": "typesafe/jev-1.13",
@@ -3347,19 +3920,380 @@
           "output_tokens": 48,
           "cost": 3.4482e-05
         },
-        "requestId": "gen-dec-1791838644-fgDfbMcHIlvuSGJq0e79",
         "timing": {
-          "upstreamMs": 320.39,
-          "headersMs": 320.27,
-          "bodyMs": 0.13,
-          "totalMs": 320.74,
+          "upstreamMs": 267.0,
+          "headersMs": 266.82,
+          "bodyMs": 0.18,
+          "totalMs": 267.19,
           "measurement": "server wall time; includes upstream network, routing, and inference",
           "cachedLocally": false
         },
         "confidenceKind": "native",
         "transport": "decisions"
       },
-      "latencyMs": 320.74,
+      "latencyMs": 267.19,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 66,
+      "repeat": 3,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:13.904038+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 840.18,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 591,
+          "completion_tokens": 17,
+          "total_tokens": 608,
+          "cost": 6.6924e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 6.76e-05,
+            "upstream_inference_prompt_cost": 5.91e-05,
+            "upstream_inference_completions_cost": 8.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 839.98,
+          "headersMs": 346.47,
+          "bodyMs": 493.51,
+          "totalMs": 840.18,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 840.18,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 67,
+      "repeat": 3,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:14.749335+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.6533269566156323,
+            "probabilities": {
+              "Harbor Office": 0.15378660233390049,
+              "Summit Works": 0.07732875992234477,
+              "Northstar Supply": 0.7688846377437548
+            }
+          }
+        },
+        "latencyMs": 98.67,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 637,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 98.48,
+          "headersMs": 98.43,
+          "bodyMs": 0.05,
+          "totalMs": 98.67,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 98.67,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 68,
+      "repeat": 3,
+      "fixtureId": "procurement-1",
+      "kind": "procurement",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:14.853212+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.3736,
+            "probabilities": {
+              "Harbor Office": 0.1738,
+              "Summit Works": 0.0884,
+              "Northstar Supply": 0.7378
+            }
+          }
+        },
+        "latencyMs": 319.1,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 637,
+          "output_tokens": 0,
+          "cost": 2.4206e-05
+        },
+        "timing": {
+          "upstreamMs": 318.93,
+          "headersMs": 318.77,
+          "bodyMs": 0.16,
+          "totalMs": 319.1,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 319.1,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 69,
+      "repeat": 3,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "jev",
+      "startedAt": "2026-10-12T23:24:15.177495+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 1,
+            "probabilities": {
+              "Harbor Office": 0,
+              "Summit Works": 0,
+              "Northstar Supply": 1
+            }
+          }
+        },
+        "latencyMs": 207.3,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 821,
+          "output_tokens": 48,
+          "cost": 3.4482e-05
+        },
+        "timing": {
+          "upstreamMs": 207.14,
+          "headersMs": 206.98,
+          "bodyMs": 0.16,
+          "totalMs": 207.3,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 207.3,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 70,
+      "repeat": 3,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "luna",
+      "startedAt": "2026-10-12T23:24:15.389907+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 948.96,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 589,
+          "completion_tokens": 17,
+          "total_tokens": 606,
+          "cost": 6.6726e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 6.74e-05,
+            "upstream_inference_prompt_cost": 5.89e-05,
+            "upstream_inference_completions_cost": 8.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "timing": {
+          "upstreamMs": 948.76,
+          "headersMs": 374.68,
+          "bodyMs": 574.07,
+          "totalMs": 948.96,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "latencyMs": 948.96,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 71,
+      "repeat": 3,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "gpu",
+      "startedAt": "2026-10-12T23:24:16.344187+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.4821949002816325,
+            "probabilities": {
+              "Harbor Office": 0.27725832514251014,
+              "Summit Works": 0.0679450746697349,
+              "Northstar Supply": 0.654796600187755
+            }
+          }
+        },
+        "latencyMs": 99.99,
+        "provider": "gpu",
+        "model": "Cloudflare/clef-flash",
+        "requestedModel": "Cloudflare/clef-flash",
+        "upstreamProvider": "custom",
+        "usage": {
+          "input_tokens": 638,
+          "output_tokens": 0
+        },
+        "timing": {
+          "upstreamMs": 99.79,
+          "headersMs": 99.73,
+          "bodyMs": 0.05,
+          "totalMs": 99.99,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 99.99,
+      "questionChecks": {
+        "supplier": true
+      },
+      "correct": true
+    },
+    {
+      "sequence": 72,
+      "repeat": 3,
+      "fixtureId": "procurement-2",
+      "kind": "procurement",
+      "provider": "clef",
+      "startedAt": "2026-10-12T23:24:16.449728+00:00",
+      "completed": true,
+      "result": {
+        "answers": {
+          "supplier": {
+            "type": "choice",
+            "choice": "Northstar Supply",
+            "confidence": 0.3887,
+            "probabilities": {
+              "Harbor Office": 0.1988,
+              "Summit Works": 0.06,
+              "Northstar Supply": 0.7412
+            }
+          }
+        },
+        "latencyMs": 348.17,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 638,
+          "output_tokens": 0,
+          "cost": 2.4244e-05
+        },
+        "timing": {
+          "upstreamMs": 347.98,
+          "headersMs": 347.81,
+          "bodyMs": 0.17,
+          "totalMs": 348.17,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "latencyMs": 348.17,
       "questionChecks": {
         "supplier": true
       },
@@ -3368,6 +4302,21 @@
   ],
   "summary": {
     "byProvider": {
+      "gpu": {
+        "n": 18,
+        "completed": 18,
+        "failed": 0,
+        "correctObservations": 18,
+        "accuracy": 1.0,
+        "questionCount": 30,
+        "correctQuestions": 30,
+        "questionAccuracy": 1.0,
+        "p50Ms": 98.67,
+        "p95Ms": 113.77,
+        "totalMs": 1635.22,
+        "meanMs": 90.85,
+        "reportedCostUsd": 0
+      },
       "clef": {
         "n": 18,
         "completed": 18,
@@ -3377,10 +4326,10 @@
         "questionCount": 30,
         "correctQuestions": 30,
         "questionAccuracy": 1.0,
-        "p50Ms": 434.62,
-        "p95Ms": 605.5,
-        "totalMs": 7556.35,
-        "meanMs": 419.8,
+        "p50Ms": 314.99,
+        "p95Ms": 433.14,
+        "totalMs": 6084.95,
+        "meanMs": 338.05,
         "reportedCostUsd": 0.000392274
       },
       "jev": {
@@ -3392,10 +4341,10 @@
         "questionCount": 30,
         "correctQuestions": 30,
         "questionAccuracy": 1.0,
-        "p50Ms": 313.66,
-        "p95Ms": 349.19,
-        "totalMs": 5590.31,
-        "meanMs": 310.57,
+        "p50Ms": 203.62,
+        "p95Ms": 292.73,
+        "totalMs": 3878.47,
+        "meanMs": 215.47,
         "reportedCostUsd": 0.00056196
       },
       "luna": {
@@ -3407,15 +4356,30 @@
         "questionCount": 30,
         "correctQuestions": 30,
         "questionAccuracy": 1.0,
-        "p50Ms": 1161.85,
-        "p95Ms": 2211.04,
-        "totalMs": 23009.22,
-        "meanMs": 1278.29,
+        "p50Ms": 963.81,
+        "p95Ms": 1619.37,
+        "totalMs": 19691.13,
+        "meanMs": 1093.95,
         "reportedCostUsd": 0.001129788
       }
     },
     "byScenario": {
       "courier": {
+        "gpu": {
+          "n": 6,
+          "completed": 6,
+          "failed": 0,
+          "correctObservations": 6,
+          "accuracy": 1.0,
+          "questionCount": 6,
+          "correctQuestions": 6,
+          "questionAccuracy": 1.0,
+          "p50Ms": 61.41,
+          "p95Ms": 62.17,
+          "totalMs": 368.74,
+          "meanMs": 61.46,
+          "reportedCostUsd": 0
+        },
         "clef": {
           "n": 6,
           "completed": 6,
@@ -3425,10 +4389,10 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 434.62,
-          "p95Ms": 450.94,
-          "totalMs": 2424.79,
-          "meanMs": 404.13,
+          "p50Ms": 307.1,
+          "p95Ms": 630.23,
+          "totalMs": 2225.23,
+          "meanMs": 370.87,
           "reportedCostUsd": 7.809e-05
         },
         "jev": {
@@ -3440,10 +4404,10 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 307.86,
-          "p95Ms": 389.49,
-          "totalMs": 1923.95,
-          "meanMs": 320.66,
+          "p50Ms": 197.01,
+          "p95Ms": 381.81,
+          "totalMs": 1385.12,
+          "meanMs": 230.85,
           "reportedCostUsd": 0.000131544
         },
         "luna": {
@@ -3455,14 +4419,29 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 980.87,
-          "p95Ms": 1344.61,
-          "totalMs": 6260.93,
-          "meanMs": 1043.49,
+          "p50Ms": 881.08,
+          "p95Ms": 1166.83,
+          "totalMs": 5552.29,
+          "meanMs": 925.38,
           "reportedCostUsd": 0.000242649
         }
       },
       "intake": {
+        "gpu": {
+          "n": 6,
+          "completed": 6,
+          "failed": 0,
+          "correctObservations": 6,
+          "accuracy": 1.0,
+          "questionCount": 18,
+          "correctQuestions": 18,
+          "questionAccuracy": 1.0,
+          "p50Ms": 112.38,
+          "p95Ms": 113.87,
+          "totalMs": 673.82,
+          "meanMs": 112.3,
+          "reportedCostUsd": 0
+        },
         "clef": {
           "n": 6,
           "completed": 6,
@@ -3472,10 +4451,10 @@
           "questionCount": 18,
           "correctQuestions": 18,
           "questionAccuracy": 1.0,
-          "p50Ms": 429.31,
-          "p95Ms": 460.04,
-          "totalMs": 2325.58,
-          "meanMs": 387.6,
+          "p50Ms": 331.85,
+          "p95Ms": 374.09,
+          "totalMs": 2017.48,
+          "meanMs": 336.25,
           "reportedCostUsd": 0.000168834
         },
         "jev": {
@@ -3487,10 +4466,10 @@
           "questionCount": 18,
           "correctQuestions": 18,
           "questionAccuracy": 1.0,
-          "p50Ms": 311.81,
-          "p95Ms": 336.06,
-          "totalMs": 1834.39,
-          "meanMs": 305.73,
+          "p50Ms": 213.79,
+          "p95Ms": 237.59,
+          "totalMs": 1257.06,
+          "meanMs": 209.51,
           "reportedCostUsd": 0.000223524
         },
         "luna": {
@@ -3502,14 +4481,29 @@
           "questionCount": 18,
           "correctQuestions": 18,
           "questionAccuracy": 1.0,
-          "p50Ms": 1176.97,
-          "p95Ms": 1882.13,
-          "totalMs": 7906.88,
-          "meanMs": 1317.81,
+          "p50Ms": 1024.55,
+          "p95Ms": 1206.65,
+          "totalMs": 6233.53,
+          "meanMs": 1038.92,
           "reportedCostUsd": 0.00048618900000000004
         }
       },
       "procurement": {
+        "gpu": {
+          "n": 6,
+          "completed": 6,
+          "failed": 0,
+          "correctObservations": 6,
+          "accuracy": 1.0,
+          "questionCount": 6,
+          "correctQuestions": 6,
+          "questionAccuracy": 1.0,
+          "p50Ms": 98.67,
+          "p95Ms": 99.91,
+          "totalMs": 592.66,
+          "meanMs": 98.78,
+          "reportedCostUsd": 0
+        },
         "clef": {
           "n": 6,
           "completed": 6,
@@ -3519,10 +4513,10 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 516.62,
-          "p95Ms": 606.24,
-          "totalMs": 2805.98,
-          "meanMs": 467.66,
+          "p50Ms": 303.5,
+          "p95Ms": 340.9,
+          "totalMs": 1842.24,
+          "meanMs": 307.04,
           "reportedCostUsd": 0.00014535
         },
         "jev": {
@@ -3534,10 +4528,10 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 318.1,
-          "p95Ms": 335.32,
-          "totalMs": 1831.97,
-          "meanMs": 305.33,
+          "p50Ms": 196.82,
+          "p95Ms": 252.22,
+          "totalMs": 1236.29,
+          "meanMs": 206.05,
           "reportedCostUsd": 0.000206892
         },
         "luna": {
@@ -3549,13 +4543,14 @@
           "questionCount": 6,
           "correctQuestions": 6,
           "questionAccuracy": 1.0,
-          "p50Ms": 1261.29,
-          "p95Ms": 2545.75,
-          "totalMs": 8841.41,
-          "meanMs": 1473.57,
+          "p50Ms": 965.55,
+          "p95Ms": 2579.93,
+          "totalMs": 7905.31,
+          "meanMs": 1317.55,
           "reportedCostUsd": 0.00040094999999999996
         }
       }
     }
-  }
+  },
+  "schemaVersion": 1
 }
