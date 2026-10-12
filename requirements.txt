@@ -1,0 +1,5 @@
+requests
+websocket-client
+openai
+nbformat
+Pillow
