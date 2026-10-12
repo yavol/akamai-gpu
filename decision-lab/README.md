@@ -42,6 +42,12 @@ Jev cannot be selected for image observations. Clef and Luna receive a canvas-re
 
 Clef is pinned to Cloudflare with `allow_fallbacks: false`: an initial routing probe through PrimeIntellect misclassified a simple color image. See `evidence/provider-probes.json` for final successful probes. No model provider is silently changed on failure.
 
+## Inspect model requests
+
+After starting a run, click **Inspect request** below a model or **Inspect N requests** in a saved result. The **Request step** menu selects a frozen observation: its image or text, task instructions, and allowed choices. Later actions do not change the selected snapshot, and saved requests remain available after resetting or switching demos within the same page session.
+
+Expand **Exact provider JSON** to see the server's submitted body, including provider-specific transformations such as GPU `images` or Luna messages and JSON schema. **Copy provider request** and **Download provider request** preserve the complete body; the on-screen preview abbreviates image data and long content. If a request is pending, fails, or the server returns no trace, the inspector clearly labels the captured browser input instead of claiming it is the final provider body. Server credentials, authorization headers, and private endpoint URLs are excluded. Inspector capture adds no inference request.
+
 ## Configure self-hosted GPU inference
 
 Set these server variables, then restart:
@@ -93,13 +99,19 @@ node scripts/benchmark_freeze.cjs
 python scripts/benchmark_providers.py
 QA_LIVE=1 node scripts/browser-test.cjs
 QA_LIVE=1 QA_VISION=1 QA_ONLY=vision node scripts/browser-test.cjs
+# Inspector behavior: synthetic responses only; no inference calls.
+QA_OUTPUT=/tmp/decision-lab-inspector-mocked node scripts/inspector-browser-test.cjs
+# Inspector integration: three real decisions on a configured app.
+APP_URL=http://127.0.0.1:8080/ QA_OUTPUT=/tmp/decision-lab-inspector-live node scripts/inspector-browser-test.cjs --live
 ```
 
 Browser scripts use a local `playwright` package when installed, with an optional `PLAYWRIGHT_MODULE` override and a managed-workspace fallback. Set `CHROMIUM_PATH` to use a particular browser; otherwise they use an available system Chromium or Playwright's installed browser. Set `APP_URL` (or `QA_URL`) to the app directory URL, including its trailing slash, to test a deployment under a path prefix. The original `browser-test.cjs` and `browser-final.cjs` suites reproduce the saved OpenRouter checks; their model assumptions are not suitable for a GPU-only catalog.
 
+The inspector's `--live` check sends one JEV text, one Luna text, and one GPU image decision, then blocks subsequent workflow requests. It validates request capture rather than full task accuracy or performance. Keep its request snapshots and screenshots in a private `QA_OUTPUT` directory outside the repository.
+
 `evidence/benchmark.json` holds final same-observation comparisons; `evidence/frozen-observations.json` holds their source tasks and scoring labels. Scoring labels never enter the model requests. `evidence/browser-qa-*.json`, browser exports, and screenshots record actual browser tests. Initial results are preserved separately from clarified-prompt results. The test fixtures are small and synthetic; results are illustrative rather than broad model rankings.
 
-The UI's Export JSON action saves the current session's raw request metadata, answers, accuracy, timings, model identity, and methodology. No API key or image data is exported.
+The UI's **Export JSON** action saves the current session's request snapshots, returned provider bodies, answers, accuracy, timings, model identity, and methodology. This now includes full observation image data when image mode was used; server credentials and private endpoint URLs remain excluded. Inspector snapshots contain only model inputs; scoring labels remain separate in the applied-call results and are never sent to providers.
 
 ### Saved OpenRouter results — October 12, 2026
 

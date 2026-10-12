@@ -1,6 +1,6 @@
 """Server-only decision adapters. Credentials never enter browser responses.
 
-Public API: catalog(), execute_decision(provider, state, questions, timeout=30).
+Public API: catalog(), execute_decision(..., timeout=30, include_request=False).
 Transport uses urllib so the managed environment's HTTPS proxy and CA trust apply.
 No retries, model substitutions, local answers, or artificial latency are added.
 """
@@ -262,17 +262,21 @@ def _answers(data: dict, questions: dict, *, chat: bool) -> dict:
     return normalized
 
 
-def execute_decision(provider: str, state: Any, questions: Any, timeout: float = 30) -> dict:
+def execute_decision(provider: str, state: Any, questions: Any, timeout: float = 30, *, include_request: bool = False) -> dict:
     """Choose exactly the requested model and normalize a real response.
 
     The custom GPU endpoint must implement {model,state,questions} -> {answers,...}.
     Configure its complete URL in GPU_DECISIONS_URL and optional GPU_API_KEY.
+    Opt-in submittedRequest contains only the final JSON body, never transport
+    headers, credentials, or endpoint configuration.
     """
     started = time.perf_counter()
     if not isinstance(provider, str) or provider not in {*_MODELS, "gpu"}:
         _invalid("Unknown provider")
     if not isinstance(timeout, (int, float)) or isinstance(timeout, bool) or not math.isfinite(timeout) or not 1 <= timeout <= 90:
         _invalid("timeout must be between 1 and 90 seconds")
+    if not isinstance(include_request, bool):
+        _invalid("includeRequest must be a boolean")
     clean_questions = _questions(questions)
     clean_state = _state(state)
     if provider == "jev" and isinstance(clean_state, list) and any(isinstance(x, dict) for x in clean_state):
@@ -315,7 +319,12 @@ def execute_decision(provider: str, state: Any, questions: Any, timeout: float =
     answers = _answers(data, clean_questions, chat=kind == "chat")
     elapsed = round((time.perf_counter() - started) * 1000, 2)
     timing.update({"totalMs": elapsed, "measurement": "server wall time; includes upstream network, routing, and inference", "cachedLocally": False})
-    return {"answers": answers, "latencyMs": elapsed, "provider": provider,
+    result = {"answers": answers, "latencyMs": elapsed, "provider": provider,
             "model": data.get("model", model), "requestedModel": model, "upstreamProvider": data.get("provider", "custom" if provider == "gpu" else None),
             "usage": data.get("usage", {}), "requestId": data.get("id"), "timing": timing,
             "confidenceKind": "unavailable" if kind == "chat" else "native", "transport": kind}
+    if include_request:
+        # This is the same final object serialized by _post_json, after every
+        # provider-specific transformation. Attach it outside the latency window.
+        result["submittedRequest"] = {"transport": kind, "body": payload}
+    return result

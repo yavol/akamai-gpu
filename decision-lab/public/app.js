@@ -1,4 +1,5 @@
 import {createScenario} from './scenarios.js';
+import {captureRequest,retainSubmittedRequest,openRequestInspector,refreshRequestInspector} from './inspector.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const appBase = new URL('.', import.meta.url);
@@ -30,6 +31,17 @@ function describeModel(el, id) {
   const model=models.find(m=>m.id===id);
   $('.model-description',el).textContent=model ? [model.description,model.model].filter(Boolean).join(' · ') : catalogReady?'No configured backend supports this observation mode.':'Waiting for the server model catalog…';
 }
+function recordForLane(lane) {
+  const provider=$('.model-select',lane.el).value;
+  if(lane.record?.provider===provider)return lane.record;
+  return records.findLast(record=>record.kind===lane.kind && record.provider===provider);
+}
+function updateInspectorButton(lane) {
+  const record=recordForLane(lane),count=record?.requests?.length || 0;
+  const button=$('.inspect-request',lane.el);button.disabled=!count;
+  button.title=count?'Inspect a frozen model request':'Run the demo to capture a model request';
+  $('.request-summary',lane.el).textContent=count?`${count} request${count===1?'':'s'} captured`:'No requests captured';
+}
 
 function mount() {
   const available=availableModels();
@@ -43,16 +55,18 @@ function mount() {
   const total = $('#compare').checked ? 2 : 1;
   lanes = Array.from({length:total}, (_,i)=>{
     const el=document.createElement('article'); el.className='lane';
-    el.innerHTML=`<div class="lane-header"><span class="lane-badge">${i?'B':'A'}</span><select class="model-select" aria-label="Model ${i?'B':'A'}"></select><span class="lane-state">READY</span></div><p class="context-note model-description"></p><div class="scene"></div><div class="lane-stats"><div><span class="stat-label">LAST DECISION</span><span class="stat-value last">—</span></div><div><span class="stat-label">TASK TIME</span><span class="stat-value total">—</span></div><div><span class="stat-label">PROGRESS</span><span class="stat-value progress">0</span></div></div><p class="context-note model-timing" hidden></p><div class="probability-panel">Native choice probabilities appear here</div><div class="action-log">Ready · observation → model → action</div>`;
+    el.innerHTML=`<div class="lane-header"><span class="lane-badge">${i?'B':'A'}</span><select class="model-select" aria-label="Model ${i?'B':'A'}"></select><span class="lane-state">READY</span></div><p class="context-note model-description"></p><div class="lane-inspector"><button class="button quiet inspect-request" disabled>⌕ Inspect request</button><span class="request-summary">No requests captured</span></div><div class="scene"></div><div class="lane-stats"><div><span class="stat-label">LAST DECISION</span><span class="stat-value last">—</span></div><div><span class="stat-label">TASK TIME</span><span class="stat-value total">—</span></div><div><span class="stat-label">PROGRESS</span><span class="stat-value progress">0</span></div></div><p class="context-note model-timing" hidden></p><div class="probability-panel">Native choice probabilities appear here</div><div class="action-log">Ready · observation → model → action</div>`;
     const select=$('.model-select',el);
     models.forEach(m=>select.append(makeOption(m,modelSelections[i])));
     if(!available.length){const o=document.createElement('option');o.textContent=catalogReady?'No model available for this mode':'Loading models…';o.selected=true;o.disabled=true;o.value='';select.prepend(o);}
     select.disabled=running || !available.length;
-    select.onchange=()=>{modelSelections[i]=select.value;describeModel(el,select.value);};
+    select.onchange=()=>{modelSelections[i]=select.value;describeModel(el,select.value);updateInspectorButton(lane);};
     describeModel(el,modelSelections[i]);
     $('#lanes').append(el);
     const scenario=createScenario(kind,$('.scene',el),{seed:Number($('#seed').value)||42});
-    const lane={el,scenario,index:i,calls:[],completed:0,correct:0,start:0,finished:false};
+    const lane={el,scenario,kind,index:i,calls:[],completed:0,correct:0,start:0,finished:false};
+    $('.inspect-request',el).onclick=event=>openRequestInspector(recordForLane(lane),event.currentTarget);
+    updateInspectorButton(lane);
     updateProgress(lane); return lane;
   });
   $('#experiment-kicker').textContent=`EXPERIMENT ${definitions[kind].number}`;
@@ -85,16 +99,18 @@ function renderRecords() {
     const tr=document.createElement('tr');
     const accuracy=`${r.correct}/${r.completed} decisions`;
     const values=[`${definitions[r.kind].name} / ${r.label}`,r.mode==='vision'?'Image + task':'Text state',r.status==='complete'?accuracy:`${accuracy} · ${r.status}`,`${r.calls.length}`,formatMs(r.p50),formatMs(r.p95),formatMs(r.totalMs)];
-    values.forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===0){const small=document.createElement('small');small.textContent=`seed ${r.seed} · run ${r.round} · ${r.model || r.provider}`;td.append(small);}tr.append(td);});
+    values.forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===0){const small=document.createElement('small');small.textContent=`seed ${r.seed} · run ${r.round} · ${r.model || r.provider}`;td.append(small);const inspect=document.createElement('button');inspect.className='button quiet inspect-run';const count=r.requests?.length || 0;inspect.textContent=`Inspect ${count} request${count===1?'':'s'}`;inspect.disabled=!count;inspect.onclick=()=>openRequestInspector(r,inspect);td.append(inspect);}tr.append(td);});
     $('#results-body').append(tr);
   });
   $('#export').disabled=!records.length;
 }
 async function runLane(lane, token, round) {
   const provider=$('.model-select',lane.el).value;
-  const record={id:crypto.randomUUID(),kind,provider,label:nameOf(provider),mode:$('#mode').value,seed:Number($('#seed').value)||42,round,startedAt:new Date().toISOString(),calls:[],completed:0,correct:0,status:'running'};
+  const record={id:crypto.randomUUID(),kind,experimentName:definitions[kind].name,provider,label:nameOf(provider),requestedModel:models.find(model=>model.id===provider)?.model,mode:$('#mode').value,seed:Number($('#seed').value)||42,round,startedAt:new Date().toISOString(),calls:[],requests:[],completed:0,correct:0,status:'running'};
+  lane.record=record;
   lane.start=performance.now();lane.finished=false;
   let status='complete';
+  let currentRequest;
   try {
     while(token===generation) {
       const observation=lane.scenario.next({mode:record.mode});
@@ -102,16 +118,24 @@ async function runLane(lane, token, round) {
       if (record.calls.length>=36) {status='step limit';log(lane,'Stopped after 36 decisions; task incomplete.',true);break;}
       setState(lane,'DECIDING',true);
       log(lane,`Reading ${record.mode==='vision'?'image':'state'} · decision ${record.calls.length+1}`);
+      currentRequest={step:record.requests.length+1,status:'pending',startedAt:new Date().toISOString(),browserInput:captureRequest(provider,observation.state,observation.questions)};
+      record.requests.push(currentRequest);updateInspectorButton(lane);refreshRequestInspector(record);
       const t=performance.now();
-      const response=await fetch(apiURL('decide'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider,state:observation.state,questions:observation.questions})});
+      const response=await fetch(apiURL('decide'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(currentRequest.browserInput)});
       const result=await response.json();
       const browserRoundTripMs=performance.now()-t;
+      currentRequest.finishedAt=new Date().toISOString();currentRequest.browserRoundTripMs=browserRoundTripMs;
+      currentRequest.submittedRequest=retainSubmittedRequest(result.submittedRequest);
+      currentRequest.returnedModel=result.model;currentRequest.status='returned';
+      refreshRequestInspector(record);
       if(!response.ok) throw new Error(result.error || `Provider returned HTTP ${response.status}`);
-      if(token!==generation) {status='stopped';break;}
+      if(token!==generation) {status='stopped';currentRequest.status='stopped';refreshRequestInspector(record);break;}
       if (!result.answers || typeof result.answers!=='object') throw new Error('The provider returned no decisions.');
       const applied=lane.scenario.apply(result.answers);
-      const call={...result,browserRoundTripMs,step:record.calls.length+1,correct:applied.correct,detail:applied.detail,expected:observation.expected,observationMeta:observation.meta};
+      const {submittedRequest,...decision}=result;
+      const call={...decision,browserRoundTripMs,step:record.calls.length+1,requestStep:currentRequest.step,correct:applied.correct,detail:applied.detail,expected:observation.expected,observationMeta:observation.meta};
       record.calls.push(call);record.completed++;if(applied.correct)record.correct++;
+      currentRequest.status='applied';refreshRequestInspector(record);
       record.model=result.model;
       lane.calls=record.calls;
       $('.last',lane.el).textContent=formatMs(result.latencyMs);
@@ -133,11 +157,11 @@ async function runLane(lane, token, round) {
       }
     }
     if(token!==generation)status='stopped';
-  } catch(error) {status='error';record.error=error.message;log(lane,error.message,true);setState(lane,'ERROR');}
+  } catch(error) {status='error';record.error=error.message;if(currentRequest){currentRequest.status='error';currentRequest.error=error.message;currentRequest.finishedAt ||= new Date().toISOString();refreshRequestInspector(record);}log(lane,error.message,true);setState(lane,'ERROR');}
   record.status=status;record.totalMs=performance.now()-lane.start;record.finishedAt=new Date().toISOString();
   record.p50=quantile(record.calls.map(c=>c.latencyMs).filter(Number.isFinite),.5);record.p95=quantile(record.calls.map(c=>c.latencyMs).filter(Number.isFinite),.95);
   lane.finished=true;$('.total',lane.el).textContent=formatMs(record.totalMs);
-  setState(lane,status==='complete'?'COMPLETE':status.toUpperCase());records.push(record);renderRecords();return record;
+  setState(lane,status==='complete'?'COMPLETE':status.toUpperCase());records.push(record);renderRecords();updateInspectorButton(lane);return record;
 }
 async function run() {
   if(running || !catalogReady || !availableModels().length)return;notice();mount();setRunning(true);const token=++generation;

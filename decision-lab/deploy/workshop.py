@@ -21,6 +21,7 @@ POD_SELECTOR = {"app.kubernetes.io/name": NAME,
                 "app.kubernetes.io/component": "gateway"}
 SOURCE_FILES = ("server.py", "server/__init__.py", "server/providers.py",
                 "public/index.html", "public/app.js", "public/style.css",
+                "public/inspector.js", "public/inspector.css",
                 "public/scenarios.js", "public/scenarios.css", "public/benchmark.json")
 
 

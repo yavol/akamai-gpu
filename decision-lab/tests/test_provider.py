@@ -42,6 +42,53 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(result["upstreamProvider"], "Cloudflare")
         self.assertNotIn("unit-secret", json.dumps(result))
         self.assertFalse(result["timing"]["cachedLocally"])
+        self.assertNotIn("submittedRequest", result)
+
+    @patch("server.providers.urllib.request.build_opener")
+    def test_submitted_request_matches_actual_serialized_body_for_each_transport(self, opener):
+        os.environ.update({"GPU_DECISIONS_URL": "http://private-gpu-service:8000/v1/systemone",
+                           "GPU_API_KEY": "gpu-unit-secret"})
+        chat_response = {"choices": [{"finish_reason": "stop", "message": {"content": '{"answers":{"color":"red"}}'}}]}
+        for provider, state, upstream, transport in (
+            ("jev", "Read the red label — text only", RESULT, "decisions"),
+            ("clef", IMAGE_STATE, RESULT, "decisions"),
+            ("gpu", IMAGE_STATE, SGLANG_RESULT, "decisions"),
+            ("luna", IMAGE_STATE, chat_response, "chat"),
+        ):
+            with self.subTest(provider=provider):
+                opener.reset_mock()
+                opener.return_value.open.return_value.__enter__.return_value.read.return_value = json.dumps(upstream).encode()
+                result = execute_decision(provider, state, QUESTIONS, include_request=True)
+                request = opener.return_value.open.call_args.args[0]
+                submitted = result["submittedRequest"]
+                self.assertEqual(set(submitted), {"transport", "body"})
+                self.assertEqual(submitted["transport"], transport)
+                self.assertEqual(submitted["body"], json.loads(request.data))
+                self.assertIsNotNone(request.get_header("Authorization"))
+                serialized = json.dumps(result)
+                for private in ("unit-secret", "gpu-unit-secret", "private-gpu-service", request.full_url):
+                    self.assertNotIn(private, serialized)
+                self.assertNotIn("includeRequest", submitted["body"])
+                if provider == "gpu":
+                    self.assertEqual(submitted["body"]["state"], "Read this image")
+                    self.assertEqual(submitted["body"]["images"], [PNG])
+                elif provider == "luna":
+                    self.assertEqual(submitted["body"]["messages"][1]["content"][1], IMAGE_STATE[1])
+                    self.assertEqual(submitted["body"]["response_format"]["type"], "json_schema")
+                    self.assertEqual(submitted["body"]["reasoning"], {"effort": "none"})
+                elif provider == "clef":
+                    self.assertEqual(submitted["body"]["provider"], {"only": ["Cloudflare"], "allow_fallbacks": False})
+                else:
+                    self.assertEqual(submitted["body"]["questions"], QUESTIONS)
+                self.assertEqual(opener.return_value.open.call_count, 1)
+
+    @patch("server.providers._post_json")
+    def test_request_capture_requires_a_boolean_before_network(self, post):
+        for value in (None, 0, 1, "true", [], {}):
+            with self.subTest(value=value), self.assertRaises(ProviderError) as error:
+                execute_decision("jev", "red", QUESTIONS, include_request=value)
+            self.assertEqual(error.exception.status, 400)
+        post.assert_not_called()
 
     @patch("server.providers._post_json", return_value=(RESULT, TIMING.copy()))
     def test_convenience_questions_are_converted(self, post):
