@@ -1,0 +1,286 @@
+{
+  "recordedAt": "2026-10-12T20:52:12.585031+00:00",
+  "methodology": "Single sequential request per provider and modality. Server wall time includes network, routing, inference, and response parsing. No warmup, no local cache, no injected delay, no retries. This small sanity probe is not a statistically reliable model benchmark.",
+  "image": {
+    "description": "128\u00d7128 solid RGB red PNG",
+    "sha256": "9b5d2bc0516a2749576352b9c38c6e9f88d2db423d8a187c1c003034b2136b3c"
+  },
+  "jevImageSupport": "Text only; rejected locally rather than allowing image data to be interpreted as text.",
+  "clefRouting": "Cloudflare pinned. PrimeIntellect failed two separate red-image checks during development; Cloudflare passed.",
+  "results": [
+    {
+      "provider": "clef",
+      "mode": "text",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": 0.9637,
+            "probabilities": {
+              "red": 0.9878,
+              "blue": 0.0058,
+              "green": 0.0064
+            }
+          }
+        },
+        "latencyMs": 406.28,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 145,
+          "output_tokens": 0,
+          "cost": 5.51e-06
+        },
+        "requestId": "gen-dec-1791838332-isEQzSRv5k7ruRtbC8fp",
+        "timing": {
+          "upstreamMs": 405.89,
+          "headersMs": 405.72,
+          "bodyMs": 0.17,
+          "totalMs": 406.28,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "success": true
+    },
+    {
+      "provider": "jev",
+      "mode": "text",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": 1,
+            "probabilities": {
+              "red": 1,
+              "blue": 0,
+              "green": 0
+            }
+          }
+        },
+        "latencyMs": 360.56,
+        "provider": "jev",
+        "model": "typesafe/jev-1.13-20260917",
+        "requestedModel": "typesafe/jev-1.13",
+        "upstreamProvider": "TypeSafe",
+        "usage": {
+          "input_tokens": 322,
+          "output_tokens": 38,
+          "cost": 1.3524e-05
+        },
+        "requestId": "gen-dec-1791838333-nNQBIusqhA604xGgb0qi",
+        "timing": {
+          "upstreamMs": 360.36,
+          "headersMs": 360.19,
+          "bodyMs": 0.16,
+          "totalMs": 360.56,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "success": true
+    },
+    {
+      "provider": "luna",
+      "mode": "text",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 1300.93,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 136,
+          "completion_tokens": 15,
+          "total_tokens": 151,
+          "cost": 2.0889e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 2.11e-05,
+            "upstream_inference_prompt_cost": 1.36e-05,
+            "upstream_inference_completions_cost": 7.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "requestId": "gen-1791838333-0MFQZheAuRNqKDTcz81A",
+        "timing": {
+          "upstreamMs": 1300.7,
+          "headersMs": 667.44,
+          "bodyMs": 633.27,
+          "totalMs": 1300.93,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "success": true
+    },
+    {
+      "provider": "luna-decisions",
+      "mode": "text",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": 1,
+            "probabilities": {
+              "red": 1,
+              "blue": 0,
+              "green": 0
+            }
+          }
+        },
+        "latencyMs": 160.0,
+        "provider": "luna-decisions",
+        "model": "openai/gpt-6-luna-decisions-20261006",
+        "requestedModel": "openai/gpt-6-luna-decisions",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "input_tokens": 121,
+          "output_tokens": 0,
+          "cost": 1.21e-05
+        },
+        "requestId": "gen-dec-1791838334-fUQFfTctmIflablmu743",
+        "timing": {
+          "upstreamMs": 159.8,
+          "headersMs": 159.67,
+          "bodyMs": 0.13,
+          "totalMs": 160.0,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "success": true
+    },
+    {
+      "provider": "clef",
+      "mode": "image",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": 0.9597,
+            "probabilities": {
+              "red": 0.9864,
+              "blue": 0.0065,
+              "green": 0.0071
+            }
+          }
+        },
+        "latencyMs": 322.38,
+        "provider": "clef",
+        "model": "cloudflare/clef-flash",
+        "requestedModel": "cloudflare/clef-flash",
+        "upstreamProvider": "Cloudflare",
+        "usage": {
+          "input_tokens": 216,
+          "output_tokens": 0,
+          "cost": 8.208e-06
+        },
+        "requestId": "gen-dec-1791838334-isThUEuB8XpsNxQJnzuD",
+        "timing": {
+          "upstreamMs": 322.04,
+          "headersMs": 321.91,
+          "bodyMs": 0.13,
+          "totalMs": 322.38,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "native",
+        "transport": "decisions"
+      },
+      "success": true
+    },
+    {
+      "provider": "luna",
+      "mode": "image",
+      "expected": "red",
+      "result": {
+        "answers": {
+          "color": {
+            "type": "choice",
+            "choice": "red",
+            "confidence": null,
+            "probabilities": null
+          }
+        },
+        "latencyMs": 1439.16,
+        "provider": "luna",
+        "model": "openai/gpt-6-luna",
+        "requestedModel": "openai/gpt-6-luna",
+        "upstreamProvider": "OpenAI",
+        "usage": {
+          "prompt_tokens": 158,
+          "completion_tokens": 15,
+          "total_tokens": 173,
+          "cost": 2.3067e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 2.33e-05,
+            "upstream_inference_prompt_cost": 1.58e-05,
+            "upstream_inference_completions_cost": 7.5e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "requestId": "gen-1791838335-dW6UQrXQlUky6Ltcjgwg",
+        "timing": {
+          "upstreamMs": 1438.87,
+          "headersMs": 752.88,
+          "bodyMs": 685.99,
+          "totalMs": 1439.16,
+          "measurement": "server wall time; includes upstream network, routing, and inference",
+          "cachedLocally": false
+        },
+        "confidenceKind": "unavailable",
+        "transport": "chat"
+      },
+      "success": true
+    }
+  ]
+}

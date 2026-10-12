@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.venv/
+node_modules/
+*.log
+deploy-state*.json
+*.private.json
+.deploy-ack

@@ -1,0 +1,106 @@
+{
+  "startedAt": "2026-10-12T20:53:08.058Z",
+  "url": "http://127.0.0.1:8080",
+  "live": false,
+  "vision": false,
+  "checks": [
+    {
+      "name": "Desktop initial render",
+      "details": {
+        "connection": "● 4 providers configured"
+      },
+      "passed": true
+    },
+    {
+      "name": "All three experiment tabs render",
+      "details": {
+        "experiments": [
+          "courier",
+          "intake",
+          "procurement"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "Vision mode prevents JEV selection and explains why",
+      "details": {},
+      "passed": true
+    },
+    {
+      "name": "Compare toggle, seed change, and reset controls work",
+      "details": {},
+      "passed": true
+    },
+    {
+      "name": "Mobile courier layout",
+      "details": {
+        "viewport": 390,
+        "document": 390,
+        "lanes": [
+          {
+            "x": 85,
+            "y": 722.015625,
+            "width": 272
+          },
+          {
+            "x": 85,
+            "y": 1282.0625,
+            "width": 272
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "Mobile intake layout",
+      "details": {
+        "viewport": 390,
+        "document": 390,
+        "lanes": [
+          {
+            "x": 85,
+            "y": 743.015625,
+            "width": 272
+          },
+          {
+            "x": 85,
+            "y": 1643,
+            "width": 272
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "Mobile procurement layout",
+      "details": {
+        "viewport": 390,
+        "document": 390,
+        "lanes": [
+          {
+            "x": 85,
+            "y": 743.015625,
+            "width": 272
+          },
+          {
+            "x": 85,
+            "y": 1765.015625,
+            "width": 272
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "Browser console and network clean",
+      "details": {},
+      "passed": true
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "runs": [],
+  "finishedAt": "2026-10-12T20:53:11.498Z"
+}

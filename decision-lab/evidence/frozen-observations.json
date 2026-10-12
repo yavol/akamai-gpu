@@ -1,0 +1,203 @@
+{
+  "createdAt": "2026-10-12T20:56:39.923Z",
+  "seed": 42,
+  "fixtureMethod": "First two text observations per scenario; expected choices advance a separate browser container only to construct the next observation. Frozen observations are not live task completion.",
+  "sourceSha256": "5b052bcec75f79f118e505d2cd067faa3673c0999eee2e32a5dc23bdcbc24ca1",
+  "fixtures": [
+    {
+      "id": "courier-1",
+      "kind": "courier",
+      "seed": 42,
+      "state": "You control a courier in a 7-column by 5-row warehouse. Coordinates are (column,row), top-left (0,0). Up decreases row, right increases column. Choose ONE next move toward the ACTIVE target by the shortest walkable route; shelves cannot be crossed. Player: (6,4). ACTIVE target: A at (4,4). Shelves: (5,1) (5,2) (3,0) (3,1) (3,3) (1,2) (1,3). Legal moves: up, left. Checkpoints already reached: 0/5. Legend: green robot is player; bright lime parcel is active; gray parcels are inactive. The trail is traversable. Grid rows:\n. . . # . . .\n. . . # . # .\n. # . . . # .\n. # . # . . .\n. . . . T . P",
+      "questions": {
+        "direction": {
+          "type": "choice",
+          "instructions": "Which single move advances the courier toward the active target along a shortest walkable route?",
+          "criteria": {
+            "up": "Select up.",
+            "left": "Select left."
+          }
+        }
+      },
+      "expected": {
+        "direction": [
+          "left"
+        ]
+      },
+      "meta": {
+        "step": 1,
+        "task": "A",
+        "inputMode": "text"
+      }
+    },
+    {
+      "id": "courier-2",
+      "kind": "courier",
+      "seed": 42,
+      "state": "You control a courier in a 7-column by 5-row warehouse. Coordinates are (column,row), top-left (0,0). Up decreases row, right increases column. Choose ONE next move toward the ACTIVE target by the shortest walkable route; shelves cannot be crossed. Player: (5,4). ACTIVE target: A at (4,4). Shelves: (5,1) (5,2) (3,0) (3,1) (3,3) (1,2) (1,3). Legal moves: up, right, left. Checkpoints already reached: 0/5. Legend: green robot is player; bright lime parcel is active; gray parcels are inactive. The trail is traversable. Grid rows:\n. . . # . . .\n. . . # . # .\n. # . . . # .\n. # . # . . .\n. . . . T P .",
+      "questions": {
+        "direction": {
+          "type": "choice",
+          "instructions": "Which single move advances the courier toward the active target along a shortest walkable route?",
+          "criteria": {
+            "up": "Select up.",
+            "right": "Select right.",
+            "left": "Select left."
+          }
+        }
+      },
+      "expected": {
+        "direction": [
+          "left"
+        ]
+      },
+      "meta": {
+        "step": 2,
+        "task": "A",
+        "inputMode": "text"
+      }
+    },
+    {
+      "id": "intake-1",
+      "kind": "intake",
+      "seed": 42,
+      "state": "Request: TK-1042 from Maya Chen, Arc Studio. Subject: Duplicate subscription charge. Our October subscription was charged twice: two payments of $149 on the same invoice. Please refund the duplicate. Invoice INV-882 and both transaction IDs are attached.\n\nTeam: Billing: charges/refunds. Security: suspected account compromise. Account access: routine login problems without compromise. Technical support: product failures.\n\nUrgency: Critical: active account compromise. High: product outage affecting an entire company. Normal: all other issues.\n\nDisposition: Apply these rules in order. (1) Escalate any Critical or High case. (2) For a Normal product issue, Request details if either the specific error/observable failure description OR workspace ID is missing. Vague reports such as “not working” need diagnostic details, not resolution. (3) Resolve with policy only for remaining Normal, known billing or routine login issues with enough facts for a standard action. This files a policy action; it does not claim the customer issue is already fixed.",
+      "questions": {
+        "team": {
+          "type": "choice",
+          "instructions": "Route by the reported issue; suspected compromise belongs to Security even if it involves login.",
+          "criteria": {
+            "Billing": "Charges, payments, duplicate transactions, or refunds.",
+            "Technical support": "Product malfunction, sync failure, or other broken feature.",
+            "Security": "Suspected account compromise, unauthorized sessions, or attacker changes.",
+            "Account access": "Routine login, password, or sign-in-link problem with no suspected compromise."
+          }
+        },
+        "urgency": {
+          "type": "choice",
+          "instructions": "Assign urgency using the explicit policy, not tone or guesswork.",
+          "criteria": {
+            "Normal": "Neither active compromise nor a company-wide product outage. Missing diagnostic information alone is Normal.",
+            "High": "A product outage blocks the entire company.",
+            "Critical": "An active account compromise is reported."
+          }
+        },
+        "disposition": {
+          "type": "choice",
+          "instructions": "Apply the policy in order: escalate Critical/High; otherwise request missing product diagnostics; otherwise file a standard known billing/login action. Do not resolve a vague product issue.",
+          "criteria": {
+            "Resolve with policy": "A Normal known billing or routine login issue has sufficient facts for a standard policy action. Never select for a vague product failure or missing diagnostic details. This files an action, not a claim the issue is fixed.",
+            "Request details": "A Normal product issue lacks either a specific error/observable failure description OR workspace ID. Vague “not working” reports need details before resolution.",
+            "Escalate": "The request is Critical (active compromise) or High (company-wide outage); escalate regardless of whether any details are missing."
+          }
+        }
+      },
+      "expected": {
+        "team": "Billing",
+        "urgency": "Normal",
+        "disposition": "Resolve with policy"
+      },
+      "meta": {
+        "step": 1,
+        "task": "TK-1042",
+        "inputMode": "text"
+      }
+    },
+    {
+      "id": "intake-2",
+      "kind": "intake",
+      "seed": 42,
+      "state": "Request: TK-1045 from Eli Parker, Fieldwork. Subject: Something is not working. One feature in the product is not working for me. Can you help? I have not included the error description or my workspace ID.\n\nTeam: Billing: charges/refunds. Security: suspected account compromise. Account access: routine login problems without compromise. Technical support: product failures.\n\nUrgency: Critical: active account compromise. High: product outage affecting an entire company. Normal: all other issues.\n\nDisposition: Apply these rules in order. (1) Escalate any Critical or High case. (2) For a Normal product issue, Request details if either the specific error/observable failure description OR workspace ID is missing. Vague reports such as “not working” need diagnostic details, not resolution. (3) Resolve with policy only for remaining Normal, known billing or routine login issues with enough facts for a standard action. This files a policy action; it does not claim the customer issue is already fixed.",
+      "questions": {
+        "team": {
+          "type": "choice",
+          "instructions": "Route by the reported issue; suspected compromise belongs to Security even if it involves login.",
+          "criteria": {
+            "Billing": "Charges, payments, duplicate transactions, or refunds.",
+            "Technical support": "Product malfunction, sync failure, or other broken feature.",
+            "Security": "Suspected account compromise, unauthorized sessions, or attacker changes.",
+            "Account access": "Routine login, password, or sign-in-link problem with no suspected compromise."
+          }
+        },
+        "urgency": {
+          "type": "choice",
+          "instructions": "Assign urgency using the explicit policy, not tone or guesswork.",
+          "criteria": {
+            "Normal": "Neither active compromise nor a company-wide product outage. Missing diagnostic information alone is Normal.",
+            "High": "A product outage blocks the entire company.",
+            "Critical": "An active account compromise is reported."
+          }
+        },
+        "disposition": {
+          "type": "choice",
+          "instructions": "Apply the policy in order: escalate Critical/High; otherwise request missing product diagnostics; otherwise file a standard known billing/login action. Do not resolve a vague product issue.",
+          "criteria": {
+            "Resolve with policy": "A Normal known billing or routine login issue has sufficient facts for a standard policy action. Never select for a vague product failure or missing diagnostic details. This files an action, not a claim the issue is fixed.",
+            "Request details": "A Normal product issue lacks either a specific error/observable failure description OR workspace ID. Vague “not working” reports need details before resolution.",
+            "Escalate": "The request is Critical (active compromise) or High (company-wide outage); escalate regardless of whether any details are missing."
+          }
+        }
+      },
+      "expected": {
+        "team": "Technical support",
+        "urgency": "Normal",
+        "disposition": "Request details"
+      },
+      "meta": {
+        "step": 2,
+        "task": "TK-1045",
+        "inputMode": "text"
+      }
+    },
+    {
+      "id": "procurement-1",
+      "kind": "procurement",
+      "seed": 42,
+      "state": "Purchase brief: Buy 12 Ergonomic mice for Design. Maximum order total including shipping: $360. Delivery must arrive in 3 days or less. Stock must cover the entire quantity. All listed products meet the specification.\n\nSelection policy: Apply hard constraints BEFORE comparing prices: (1) Reject any offer whose in-stock quantity is less than the requested quantity. (2) Reject any offer arriving after the maximum delivery days. (3) Reject any offer whose order total exceeds the budget. (4) Only among remaining eligible offers, choose the LOWEST total. A cheaper offer must never win if it fails even one constraint. Order total = unit price × requested quantity + shipping.\n\nHarbor Office: SKU HO-M22. Unit price $22. Stock 40 units. Delivery 5 days. Shipping $0. Total for 12 units including shipping: $264.\n\nSummit Works: SKU SW-E26. Unit price $26. Stock 8 units. Delivery 1 days. Shipping $12. Total for 12 units including shipping: $324.\n\nNorthstar Supply: SKU NS-MX24. Unit price $24. Stock 18 units. Delivery 2 days. Shipping $18. Total for 12 units including shipping: $306.",
+      "questions": {
+        "supplier": {
+          "type": "choice",
+          "instructions": "First eliminate offers failing STOCK, DELIVERY, or BUDGET. Then choose the lowest total among the remaining eligible offers. Do not select a cheaper supplier with insufficient stock or late delivery.",
+          "criteria": {
+            "Harbor Office": "Choose Harbor Office only if all constraints hold: its stock of 40 units covers the requested 12; its 5-day delivery is within 3 days; its $264 total is within $360. Then its total must be the lowest among suppliers satisfying ALL three requirements.",
+            "Summit Works": "Choose Summit Works only if all constraints hold: its stock of 8 units covers the requested 12; its 1-day delivery is within 3 days; its $324 total is within $360. Then its total must be the lowest among suppliers satisfying ALL three requirements.",
+            "Northstar Supply": "Choose Northstar Supply only if all constraints hold: its stock of 18 units covers the requested 12; its 2-day delivery is within 3 days; its $306 total is within $360. Then its total must be the lowest among suppliers satisfying ALL three requirements."
+          }
+        }
+      },
+      "expected": {
+        "supplier": "Northstar Supply"
+      },
+      "meta": {
+        "step": 1,
+        "task": "PR-210",
+        "inputMode": "text"
+      }
+    },
+    {
+      "id": "procurement-2",
+      "kind": "procurement",
+      "seed": 42,
+      "state": "Purchase brief: Buy 10 HD webcams for Sales. Maximum order total including shipping: $650. Delivery must arrive in 3 days or less. Stock must cover the entire quantity. All listed products meet the specification.\n\nSelection policy: Apply hard constraints BEFORE comparing prices: (1) Reject any offer whose in-stock quantity is less than the requested quantity. (2) Reject any offer arriving after the maximum delivery days. (3) Reject any offer whose order total exceeds the budget. (4) Only among remaining eligible offers, choose the LOWEST total. A cheaper offer must never win if it fails even one constraint. Order total = unit price × requested quantity + shipping.\n\nHarbor Office: SKU HO-W62. Unit price $62. Stock 30 units. Delivery 3 days. Shipping $10. Total for 10 units including shipping: $630.\n\nSummit Works: SKU SW-W48. Unit price $48. Stock 40 units. Delivery 5 days. Shipping $0. Total for 10 units including shipping: $480.\n\nNorthstar Supply: SKU NS-W55. Unit price $55. Stock 24 units. Delivery 2 days. Shipping $15. Total for 10 units including shipping: $565.",
+      "questions": {
+        "supplier": {
+          "type": "choice",
+          "instructions": "First eliminate offers failing STOCK, DELIVERY, or BUDGET. Then choose the lowest total among the remaining eligible offers. Do not select a cheaper supplier with insufficient stock or late delivery.",
+          "criteria": {
+            "Harbor Office": "Choose Harbor Office only if all constraints hold: its stock of 30 units covers the requested 10; its 3-day delivery is within 3 days; its $630 total is within $650. Then its total must be the lowest among suppliers satisfying ALL three requirements.",
+            "Summit Works": "Choose Summit Works only if all constraints hold: its stock of 40 units covers the requested 10; its 5-day delivery is within 3 days; its $480 total is within $650. Then its total must be the lowest among suppliers satisfying ALL three requirements.",
+            "Northstar Supply": "Choose Northstar Supply only if all constraints hold: its stock of 24 units covers the requested 10; its 2-day delivery is within 3 days; its $565 total is within $650. Then its total must be the lowest among suppliers satisfying ALL three requirements."
+          }
+        }
+      },
+      "expected": {
+        "supplier": "Northstar Supply"
+      },
+      "meta": {
+        "step": 2,
+        "task": "PR-213",
+        "inputMode": "text"
+      }
+    }
+  ]
+}

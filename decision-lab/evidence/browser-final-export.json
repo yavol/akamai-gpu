@@ -1,0 +1,1865 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-12T20:58:05.670Z",
+  "methodology": {
+    "latency": "Server wall-clock provider request including proxy, network, and routing",
+    "total": "Browser wall-clock full task including rendering",
+    "percentile": "Nearest-rank; first call included",
+    "workloads": "Synthetic seeded browser sandboxes; each model applies its own choices",
+    "warning": "Different actions can yield different game trajectories. No inference-only speed claim. Small samples are exploratory.",
+    "luna": "GPT-6 Luna chat with structured JSON; decision providers use choice heads."
+  },
+  "runs": [
+    {
+      "id": "7cbb4c26-6404-47f6-87f8-2f466f752377",
+      "kind": "intake",
+      "provider": "clef",
+      "label": "Clef Flash",
+      "mode": "text",
+      "seed": 42,
+      "round": 1,
+      "startedAt": "2026-10-12T20:57:49.376Z",
+      "calls": [
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Billing",
+              "confidence": 0.8824,
+              "probabilities": {
+                "Billing": 0.9545,
+                "Technical support": 0.0097,
+                "Security": 0.0235,
+                "Account access": 0.0123
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": 0.4871,
+              "probabilities": {
+                "Normal": 0.7982,
+                "High": 0.0842,
+                "Critical": 0.1176
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Resolve with policy",
+              "confidence": 0.8722,
+              "probabilities": {
+                "Resolve with policy": 0.9559,
+                "Request details": 0.0239,
+                "Escalate": 0.0202
+              }
+            }
+          },
+          "latencyMs": 537.95,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 745,
+            "output_tokens": 0,
+            "cost": 0.00002831
+          },
+          "requestId": "gen-dec-1791838669-JkqKAdRKzFk0lNClAaUo",
+          "timing": {
+            "upstreamMs": 537.63,
+            "headersMs": 537.51,
+            "bodyMs": 0.12,
+            "totalMs": 537.95,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 542.1999999999534,
+          "step": 1,
+          "correct": true,
+          "detail": "TK-1042: Billing · Normal · Resolve with policy",
+          "expected": {
+            "team": "Billing",
+            "urgency": "Normal",
+            "disposition": "Resolve with policy"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "TK-1042",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": 0.8201,
+              "probabilities": {
+                "Billing": 0.0205,
+                "Technical support": 0.9292,
+                "Security": 0.0208,
+                "Account access": 0.0295
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": 0.7289,
+              "probabilities": {
+                "Normal": 0.9025,
+                "High": 0.0514,
+                "Critical": 0.0461
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Request details",
+              "confidence": 0.8317,
+              "probabilities": {
+                "Resolve with policy": 0.0303,
+                "Request details": 0.9413,
+                "Escalate": 0.0284
+              }
+            }
+          },
+          "latencyMs": 532.47,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 736,
+            "output_tokens": 0,
+            "cost": 0.000027968
+          },
+          "requestId": "gen-dec-1791838669-g5McHr8mce2XPe4QqI8Y",
+          "timing": {
+            "upstreamMs": 532.25,
+            "headersMs": 531.37,
+            "bodyMs": 0.89,
+            "totalMs": 532.47,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 535.9000000000233,
+          "step": 2,
+          "correct": true,
+          "detail": "TK-1045: Technical support · Normal · Request details",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "Normal",
+            "disposition": "Request details"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "TK-1045",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Security",
+              "confidence": 0.8851,
+              "probabilities": {
+                "Billing": 0.0152,
+                "Technical support": 0.0131,
+                "Security": 0.9556,
+                "Account access": 0.0161
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Critical",
+              "confidence": 0.7588,
+              "probabilities": {
+                "Normal": 0.0385,
+                "High": 0.0475,
+                "Critical": 0.914
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": 0.7125,
+              "probabilities": {
+                "Resolve with policy": 0.0604,
+                "Request details": 0.0436,
+                "Escalate": 0.896
+              }
+            }
+          },
+          "latencyMs": 487.15,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 744,
+            "output_tokens": 0,
+            "cost": 0.000028272
+          },
+          "requestId": "gen-dec-1791838670-oEZKVPa8QPp0nr7zAIfL",
+          "timing": {
+            "upstreamMs": 486.94,
+            "headersMs": 486.83,
+            "bodyMs": 0.11,
+            "totalMs": 487.15,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 490.20000000006985,
+          "step": 3,
+          "correct": true,
+          "detail": "TK-1043: Security · Critical · Escalate",
+          "expected": {
+            "team": "Security",
+            "urgency": "Critical",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "TK-1043",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": 0.5875,
+              "probabilities": {
+                "Billing": 0.0297,
+                "Technical support": 0.8237,
+                "Security": 0.0575,
+                "Account access": 0.0891
+              }
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "High",
+              "confidence": 0.8822,
+              "probabilities": {
+                "Normal": 0.0196,
+                "High": 0.9595,
+                "Critical": 0.0209
+              }
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": 0.5218,
+              "probabilities": {
+                "Resolve with policy": 0.0976,
+                "Request details": 0.0875,
+                "Escalate": 0.8149
+              }
+            }
+          },
+          "latencyMs": 799,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 749,
+            "output_tokens": 0,
+            "cost": 0.000028462
+          },
+          "requestId": "gen-dec-1791838671-UQ6rR4HO25et9xUSNl2C",
+          "timing": {
+            "upstreamMs": 798.75,
+            "headersMs": 798.61,
+            "bodyMs": 0.13,
+            "totalMs": 799,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 801.6999999999534,
+          "step": 4,
+          "correct": true,
+          "detail": "TK-1044: Technical support · High · Escalate",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "High",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "TK-1044",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 2423.4000000000233,
+      "finishedAt": "2026-10-12T20:57:51.799Z",
+      "p50": 532.47,
+      "p95": 799
+    },
+    {
+      "id": "cc9f4c27-e3f7-4b96-9d17-1a8c838095f3",
+      "kind": "intake",
+      "provider": "luna",
+      "label": "GPT-6 Luna",
+      "mode": "text",
+      "seed": 42,
+      "round": 1,
+      "startedAt": "2026-10-12T20:57:49.377Z",
+      "calls": [
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Billing",
+              "confidence": null,
+              "probabilities": null
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": null,
+              "probabilities": null
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Resolve with policy",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1354.09,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 686,
+            "completion_tokens": 27,
+            "total_tokens": 713,
+            "cost": 0.000081279,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000821,
+              "upstream_inference_prompt_cost": 0.0000686,
+              "upstream_inference_completions_cost": 0.0000135
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838669-hgE23eiIFv7zKgbi7zJ5",
+          "timing": {
+            "upstreamMs": 1353.87,
+            "headersMs": 480.25,
+            "bodyMs": 873.63,
+            "totalMs": 1354.09,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1358,
+          "step": 1,
+          "correct": true,
+          "detail": "TK-1042: Billing · Normal · Resolve with policy",
+          "expected": {
+            "team": "Billing",
+            "urgency": "Normal",
+            "disposition": "Resolve with policy"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "TK-1042",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": null,
+              "probabilities": null
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Normal",
+              "confidence": null,
+              "probabilities": null
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Request details",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1189.84,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 681,
+            "completion_tokens": 27,
+            "total_tokens": 708,
+            "cost": 0.000080784,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000816,
+              "upstream_inference_prompt_cost": 0.0000681,
+              "upstream_inference_completions_cost": 0.0000135
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838670-HnlVBEvBo1vfLdsWYSdf",
+          "timing": {
+            "upstreamMs": 1189.6,
+            "headersMs": 440.88,
+            "bodyMs": 748.72,
+            "totalMs": 1189.84,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1193.2999999999302,
+          "step": 2,
+          "correct": true,
+          "detail": "TK-1045: Technical support · Normal · Request details",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "Normal",
+            "disposition": "Request details"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "TK-1045",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Security",
+              "confidence": null,
+              "probabilities": null
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "Critical",
+              "confidence": null,
+              "probabilities": null
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1542.72,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 688,
+            "completion_tokens": 27,
+            "total_tokens": 715,
+            "cost": 0.000081477,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000823,
+              "upstream_inference_prompt_cost": 0.0000688,
+              "upstream_inference_completions_cost": 0.0000135
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838671-f5CeC9t1hEiW6j9kagRk",
+          "timing": {
+            "upstreamMs": 1542.44,
+            "headersMs": 563.73,
+            "bodyMs": 978.71,
+            "totalMs": 1542.72,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1545.8999999999069,
+          "step": 3,
+          "correct": true,
+          "detail": "TK-1043: Security · Critical · Escalate",
+          "expected": {
+            "team": "Security",
+            "urgency": "Critical",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "TK-1043",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "team": {
+              "type": "choice",
+              "choice": "Technical support",
+              "confidence": null,
+              "probabilities": null
+            },
+            "urgency": {
+              "type": "choice",
+              "choice": "High",
+              "confidence": null,
+              "probabilities": null
+            },
+            "disposition": {
+              "type": "choice",
+              "choice": "Escalate",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1991.63,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 690,
+            "completion_tokens": 28,
+            "total_tokens": 718,
+            "cost": 0.00008217,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.000083,
+              "upstream_inference_prompt_cost": 0.000069,
+              "upstream_inference_completions_cost": 0.000014
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838673-XxxD9cnOWYqXWteG3y7o",
+          "timing": {
+            "upstreamMs": 1991.4,
+            "headersMs": 1266.52,
+            "bodyMs": 724.88,
+            "totalMs": 1991.63,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1994.5999999999767,
+          "step": 4,
+          "correct": true,
+          "detail": "TK-1044: Technical support · High · Escalate",
+          "expected": {
+            "team": "Technical support",
+            "urgency": "High",
+            "disposition": "Escalate"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "TK-1044",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "openai/gpt-6-luna",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 6122.800000000047,
+      "finishedAt": "2026-10-12T20:57:55.500Z",
+      "p50": 1354.09,
+      "p95": 1991.63
+    },
+    {
+      "id": "f5410bc9-2554-4218-ac51-7a82b7062e6d",
+      "kind": "procurement",
+      "provider": "clef",
+      "label": "Clef Flash",
+      "mode": "text",
+      "seed": 42,
+      "round": 2,
+      "startedAt": "2026-10-12T20:57:55.895Z",
+      "calls": [
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 0.3736,
+              "probabilities": {
+                "Harbor Office": 0.1738,
+                "Summit Works": 0.0884,
+                "Northstar Supply": 0.7378
+              }
+            }
+          },
+          "latencyMs": 288.07,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 637,
+            "output_tokens": 0,
+            "cost": 0.000024206
+          },
+          "requestId": "gen-dec-1791838675-2V4TV1BTkfzJYq4eGbIl",
+          "timing": {
+            "upstreamMs": 287.59,
+            "headersMs": 287.44,
+            "bodyMs": 0.15,
+            "totalMs": 288.07,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 291.80000000004657,
+          "step": 1,
+          "correct": true,
+          "detail": "Northstar Supply · NS-MX24 · $306",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "PR-210",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 0.3887,
+              "probabilities": {
+                "Harbor Office": 0.1988,
+                "Summit Works": 0.06,
+                "Northstar Supply": 0.7412
+              }
+            }
+          },
+          "latencyMs": 284.69,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 638,
+            "output_tokens": 0,
+            "cost": 0.000024244
+          },
+          "requestId": "gen-dec-1791838676-QERzySblYmwvwkU2ELNk",
+          "timing": {
+            "upstreamMs": 284.48,
+            "headersMs": 284.32,
+            "bodyMs": 0.16,
+            "totalMs": 284.69,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 288.4000000000233,
+          "step": 2,
+          "correct": true,
+          "detail": "Northstar Supply · NS-W55 · $565",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "PR-213",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": 0.4769,
+              "probabilities": {
+                "Summit Works": 0.111,
+                "Harbor Office": 0.7937,
+                "Northstar Supply": 0.0953
+              }
+            }
+          },
+          "latencyMs": 271.22,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 630,
+            "output_tokens": 0,
+            "cost": 0.00002394
+          },
+          "requestId": "gen-dec-1791838676-LMB6qvikIwD3ajnZcLX4",
+          "timing": {
+            "upstreamMs": 271.03,
+            "headersMs": 270.9,
+            "bodyMs": 0.13,
+            "totalMs": 271.22,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 275,
+          "step": 3,
+          "correct": true,
+          "detail": "Harbor Office · HO-D89 · $728",
+          "expected": {
+            "supplier": "Harbor Office"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "PR-211",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Summit Works",
+              "confidence": 0.4537,
+              "probabilities": {
+                "Summit Works": 0.7822,
+                "Harbor Office": 0.0975,
+                "Northstar Supply": 0.1203
+              }
+            }
+          },
+          "latencyMs": 501.22,
+          "provider": "clef",
+          "model": "cloudflare/clef-flash",
+          "requestedModel": "cloudflare/clef-flash",
+          "upstreamProvider": "Cloudflare",
+          "usage": {
+            "input_tokens": 647,
+            "output_tokens": 0,
+            "cost": 0.000024586
+          },
+          "requestId": "gen-dec-1791838676-MscC3ytLlVMF7K1ZHjis",
+          "timing": {
+            "upstreamMs": 500.99,
+            "headersMs": 500.86,
+            "bodyMs": 0.13,
+            "totalMs": 501.22,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 504.5999999999767,
+          "step": 4,
+          "correct": true,
+          "detail": "Summit Works · SW-H46 · $944",
+          "expected": {
+            "supplier": "Summit Works"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "PR-212",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "cloudflare/clef-flash",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 1404.1999999999534,
+      "finishedAt": "2026-10-12T20:57:57.299Z",
+      "p50": 284.69,
+      "p95": 501.22
+    },
+    {
+      "id": "576b499d-21bf-4aac-b572-a6059d12cc98",
+      "kind": "procurement",
+      "provider": "luna",
+      "label": "GPT-6 Luna",
+      "mode": "text",
+      "seed": 42,
+      "round": 2,
+      "startedAt": "2026-10-12T20:57:55.897Z",
+      "calls": [
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1035.77,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 591,
+            "completion_tokens": 17,
+            "total_tokens": 608,
+            "cost": 0.000066924,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000676,
+              "upstream_inference_prompt_cost": 0.0000591,
+              "upstream_inference_completions_cost": 0.0000085
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838675-EfjII6dyjTPgQELFTZ0q",
+          "timing": {
+            "upstreamMs": 1035.32,
+            "headersMs": 424.1,
+            "bodyMs": 611.22,
+            "totalMs": 1035.77,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1038.8000000000466,
+          "step": 1,
+          "correct": true,
+          "detail": "Northstar Supply · NS-MX24 · $306",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "PR-210",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 989.77,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 589,
+            "completion_tokens": 17,
+            "total_tokens": 606,
+            "cost": 0.000066726,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000674,
+              "upstream_inference_prompt_cost": 0.0000589,
+              "upstream_inference_completions_cost": 0.0000085
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838677-cyX7Vnuxm6iHsH9EXEre",
+          "timing": {
+            "upstreamMs": 989.54,
+            "headersMs": 442.61,
+            "bodyMs": 546.93,
+            "totalMs": 989.77,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 993.9000000000233,
+          "step": 2,
+          "correct": true,
+          "detail": "Northstar Supply · NS-W55 · $565",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "PR-213",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1092.54,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 591,
+            "completion_tokens": 17,
+            "total_tokens": 608,
+            "cost": 0.000066924,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000676,
+              "upstream_inference_prompt_cost": 0.0000591,
+              "upstream_inference_completions_cost": 0.0000085
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838677-ir8jR7qbqiBW8Bi6EVtN",
+          "timing": {
+            "upstreamMs": 1092.33,
+            "headersMs": 442.86,
+            "bodyMs": 649.47,
+            "totalMs": 1092.54,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1096.0999999999767,
+          "step": 3,
+          "correct": true,
+          "detail": "Harbor Office · HO-D89 · $728",
+          "expected": {
+            "supplier": "Harbor Office"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "PR-211",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Summit Works",
+              "confidence": null,
+              "probabilities": null
+            }
+          },
+          "latencyMs": 1012.59,
+          "provider": "luna",
+          "model": "openai/gpt-6-luna",
+          "requestedModel": "openai/gpt-6-luna",
+          "upstreamProvider": "OpenAI",
+          "usage": {
+            "prompt_tokens": 599,
+            "completion_tokens": 17,
+            "total_tokens": 616,
+            "cost": 0.000067716,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0000684,
+              "upstream_inference_prompt_cost": 0.0000599,
+              "upstream_inference_completions_cost": 0.0000085
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            }
+          },
+          "requestId": "gen-1791838679-d0sATGkZLJ3pr8RxTn7Q",
+          "timing": {
+            "upstreamMs": 1012.31,
+            "headersMs": 453.12,
+            "bodyMs": 559.19,
+            "totalMs": 1012.59,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "unavailable",
+          "transport": "chat",
+          "browserRoundTripMs": 1016.1999999999534,
+          "step": 4,
+          "correct": true,
+          "detail": "Summit Works · SW-H46 · $944",
+          "expected": {
+            "supplier": "Summit Works"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "PR-212",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "openai/gpt-6-luna",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 4184.800000000047,
+      "finishedAt": "2026-10-12T20:58:00.082Z",
+      "p50": 1012.59,
+      "p95": 1092.54
+    },
+    {
+      "id": "b1966ff8-d484-40b9-98c1-61a3a25e29d7",
+      "kind": "procurement",
+      "provider": "jev",
+      "label": "JEV 1.13",
+      "mode": "text",
+      "seed": 42,
+      "round": 3,
+      "startedAt": "2026-10-12T20:58:00.489Z",
+      "calls": [
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 1,
+              "probabilities": {
+                "Harbor Office": 0,
+                "Summit Works": 0,
+                "Northstar Supply": 1
+              }
+            }
+          },
+          "latencyMs": 266.96,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 821,
+            "output_tokens": 48,
+            "cost": 0.000034482
+          },
+          "requestId": "gen-dec-1791838680-UvA5PTqY1rOjMNMOYemx",
+          "timing": {
+            "upstreamMs": 266.77,
+            "headersMs": 266.43,
+            "bodyMs": 0.34,
+            "totalMs": 266.96,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 270.5,
+          "step": 1,
+          "correct": true,
+          "detail": "Northstar Supply · NS-MX24 · $306",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "PR-210",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Northstar Supply",
+              "confidence": 1,
+              "probabilities": {
+                "Harbor Office": 0,
+                "Summit Works": 0,
+                "Northstar Supply": 1
+              }
+            }
+          },
+          "latencyMs": 530.57,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 821,
+            "output_tokens": 48,
+            "cost": 0.000034482
+          },
+          "requestId": "gen-dec-1791838680-0vXDqTzbYTMyPWZBy6OL",
+          "timing": {
+            "upstreamMs": 530.4,
+            "headersMs": 529.64,
+            "bodyMs": 0.76,
+            "totalMs": 530.57,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 534,
+          "step": 2,
+          "correct": true,
+          "detail": "Northstar Supply · NS-W55 · $565",
+          "expected": {
+            "supplier": "Northstar Supply"
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "PR-213",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Harbor Office",
+              "confidence": 1,
+              "probabilities": {
+                "Summit Works": 0,
+                "Harbor Office": 1,
+                "Northstar Supply": 0
+              }
+            }
+          },
+          "latencyMs": 282.25,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 813,
+            "output_tokens": 47,
+            "cost": 0.000034146
+          },
+          "requestId": "gen-dec-1791838681-JJpDDmZrHkunLY1fn5Wl",
+          "timing": {
+            "upstreamMs": 282.07,
+            "headersMs": 281.92,
+            "bodyMs": 0.14,
+            "totalMs": 282.25,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 285.70000000006985,
+          "step": 3,
+          "correct": true,
+          "detail": "Harbor Office · HO-D89 · $728",
+          "expected": {
+            "supplier": "Harbor Office"
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "PR-211",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "supplier": {
+              "type": "choice",
+              "choice": "Summit Works",
+              "confidence": 1,
+              "probabilities": {
+                "Summit Works": 1,
+                "Harbor Office": 0,
+                "Northstar Supply": 0
+              }
+            }
+          },
+          "latencyMs": 385.69,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 831,
+            "output_tokens": 47,
+            "cost": 0.000034902
+          },
+          "requestId": "gen-dec-1791838681-j5FvQWKEhBHZ59nUtqNW",
+          "timing": {
+            "upstreamMs": 385.51,
+            "headersMs": 385.37,
+            "bodyMs": 0.14,
+            "totalMs": 385.69,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 389.0999999999767,
+          "step": 4,
+          "correct": true,
+          "detail": "Summit Works · SW-H46 · $944",
+          "expected": {
+            "supplier": "Summit Works"
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "PR-212",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 4,
+      "correct": 4,
+      "status": "complete",
+      "model": "typesafe/jev-1.13-20260917",
+      "taskProgress": {
+        "current": 4,
+        "total": 4,
+        "completedTasks": 4,
+        "score": 4
+      },
+      "outcome": "success",
+      "totalMs": 1526.5999999999767,
+      "finishedAt": "2026-10-12T20:58:02.015Z",
+      "p50": 282.25,
+      "p95": 530.57
+    },
+    {
+      "id": "ab94c5f2-7998-4ddd-9462-953be6ddb42a",
+      "kind": "courier",
+      "provider": "jev",
+      "label": "JEV 1.13",
+      "mode": "text",
+      "seed": 42,
+      "round": 4,
+      "startedAt": "2026-10-12T20:58:02.340Z",
+      "calls": [
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 1,
+              "probabilities": {
+                "up": 0,
+                "left": 1
+              }
+            }
+          },
+          "latencyMs": 267.69,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 514,
+            "output_tokens": 31,
+            "cost": 0.000021588
+          },
+          "requestId": "gen-dec-1791838682-vEQvhlejjv1ieFElyhSQ",
+          "timing": {
+            "upstreamMs": 267.5,
+            "headersMs": 267.36,
+            "bodyMs": 0.14,
+            "totalMs": 267.69,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 271,
+          "step": 1,
+          "correct": true,
+          "detail": "Moved left · on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 1,
+            "task": "A",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.98,
+              "probabilities": {
+                "up": 0.01,
+                "right": 0,
+                "left": 0.99
+              }
+            }
+          },
+          "latencyMs": 286.35,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838682-XU8obazwPmicazyQVfhx",
+          "timing": {
+            "upstreamMs": 286.18,
+            "headersMs": 286.03,
+            "bodyMs": 0.15,
+            "totalMs": 286.35,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 289.5999999999767,
+          "step": 2,
+          "correct": true,
+          "detail": "Checkpoint A collected",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 2,
+            "task": "A",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.97,
+              "probabilities": {
+                "up": 0.98,
+                "right": 0,
+                "left": 0.02
+              }
+            }
+          },
+          "latencyMs": 316.39,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838682-Xu4feiVdmGzxlFTe2Lde",
+          "timing": {
+            "upstreamMs": 316.23,
+            "headersMs": 316.11,
+            "bodyMs": 0.12,
+            "totalMs": 316.39,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 319.4000000000233,
+          "step": 3,
+          "correct": true,
+          "detail": "Moved up · on route",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 3,
+            "task": "B",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 1,
+              "probabilities": {
+                "up": 1,
+                "right": 0,
+                "down": 0
+              }
+            }
+          },
+          "latencyMs": 260.9,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838683-TgBB8aR1TJttkp2cq47R",
+          "timing": {
+            "upstreamMs": 260.73,
+            "headersMs": 260.6,
+            "bodyMs": 0.13,
+            "totalMs": 260.9,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 263.9000000000233,
+          "step": 4,
+          "correct": true,
+          "detail": "Checkpoint B collected",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 4,
+            "task": "B",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.98,
+              "probabilities": {
+                "up": 0.01,
+                "down": 0,
+                "left": 0.99
+              }
+            }
+          },
+          "latencyMs": 270.75,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838683-edqEAwB2Iiynjs7TdEnz",
+          "timing": {
+            "upstreamMs": 270.56,
+            "headersMs": 270.42,
+            "bodyMs": 0.14,
+            "totalMs": 270.75,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 273.9000000000233,
+          "step": 5,
+          "correct": true,
+          "detail": "Moved left · on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 5,
+            "task": "C",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 1,
+              "probabilities": {
+                "right": 0,
+                "left": 1
+              }
+            }
+          },
+          "latencyMs": 319.24,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 514,
+            "output_tokens": 31,
+            "cost": 0.000021588
+          },
+          "requestId": "gen-dec-1791838683-h99atJkGshBxkBFrsP4f",
+          "timing": {
+            "upstreamMs": 319.07,
+            "headersMs": 318.95,
+            "bodyMs": 0.12,
+            "totalMs": 319.24,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 322.19999999995343,
+          "step": 6,
+          "correct": true,
+          "detail": "Checkpoint C collected",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 6,
+            "task": "C",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.83,
+              "probabilities": {
+                "up": 0.89,
+                "right": 0.1,
+                "down": 0.01
+              }
+            }
+          },
+          "latencyMs": 299.62,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838684-tnyCBQqmnsUFUH5CrIok",
+          "timing": {
+            "upstreamMs": 299.45,
+            "headersMs": 299.3,
+            "bodyMs": 0.15,
+            "totalMs": 299.62,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 303,
+          "step": 7,
+          "correct": true,
+          "detail": "Moved up · on route",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 7,
+            "task": "D",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "up",
+              "confidence": 0.98,
+              "probabilities": {
+                "up": 0.99,
+                "down": 0,
+                "left": 0.01
+              }
+            }
+          },
+          "latencyMs": 301.1,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 530,
+            "output_tokens": 38,
+            "cost": 0.00002226
+          },
+          "requestId": "gen-dec-1791838684-LkjE9EsLhSxbr5OOcdRJ",
+          "timing": {
+            "upstreamMs": 300.91,
+            "headersMs": 300.77,
+            "bodyMs": 0.14,
+            "totalMs": 301.1,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 304.4000000000233,
+          "step": 8,
+          "correct": true,
+          "detail": "Checkpoint D collected",
+          "expected": {
+            "direction": [
+              "up"
+            ]
+          },
+          "observationMeta": {
+            "step": 8,
+            "task": "D",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.92,
+              "probabilities": {
+                "down": 0.04,
+                "left": 0.96
+              }
+            }
+          },
+          "latencyMs": 323.95,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 516,
+            "output_tokens": 31,
+            "cost": 0.000021672
+          },
+          "requestId": "gen-dec-1791838684-gehQWA8S0Wcodtw7U0ss",
+          "timing": {
+            "upstreamMs": 323.7,
+            "headersMs": 323.57,
+            "bodyMs": 0.13,
+            "totalMs": 323.95,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 326.9000000000233,
+          "step": 9,
+          "correct": true,
+          "detail": "Moved left · on route",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 9,
+            "task": "⌂",
+            "inputMode": "text"
+          }
+        },
+        {
+          "answers": {
+            "direction": {
+              "type": "choice",
+              "choice": "left",
+              "confidence": 0.94,
+              "probabilities": {
+                "right": 0,
+                "down": 0.04,
+                "left": 0.96
+              }
+            }
+          },
+          "latencyMs": 292.75,
+          "provider": "jev",
+          "model": "typesafe/jev-1.13-20260917",
+          "requestedModel": "typesafe/jev-1.13",
+          "upstreamProvider": "TypeSafe",
+          "usage": {
+            "input_tokens": 532,
+            "output_tokens": 38,
+            "cost": 0.000022344
+          },
+          "requestId": "gen-dec-1791838685-kfQtGEbZwQEhKHqF4K2f",
+          "timing": {
+            "upstreamMs": 292.57,
+            "headersMs": 292.4,
+            "bodyMs": 0.17,
+            "totalMs": 292.75,
+            "measurement": "server wall time; includes upstream network, routing, and inference",
+            "cachedLocally": false
+          },
+          "confidenceKind": "native",
+          "transport": "decisions",
+          "browserRoundTripMs": 295.70000000006985,
+          "step": 10,
+          "correct": true,
+          "detail": "All parcels delivered",
+          "expected": {
+            "direction": [
+              "left"
+            ]
+          },
+          "observationMeta": {
+            "step": 10,
+            "task": "⌂",
+            "inputMode": "text"
+          }
+        }
+      ],
+      "completed": 10,
+      "correct": 10,
+      "status": "complete",
+      "model": "typesafe/jev-1.13-20260917",
+      "taskProgress": {
+        "current": 5,
+        "total": 5,
+        "completedTasks": 5,
+        "score": 10,
+        "decisions": 10,
+        "maxDecisions": 18
+      },
+      "outcome": "success",
+      "totalMs": 3058.3000000000466,
+      "finishedAt": "2026-10-12T20:58:05.398Z",
+      "p50": 292.75,
+      "p95": 323.95
+    }
+  ]
+}
