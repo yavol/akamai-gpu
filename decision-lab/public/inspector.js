@@ -130,7 +130,7 @@ function renderResponse(entry) {
   $('#inspector-response-status').textContent=description;
   $('#inspector-copy-response').disabled=!trace;
   $('#inspector-download-response').disabled=!trace;
-  $('#inspector-response-trace-label').textContent=trace?`Raw provider response JSON · ${trace.transport || 'native response'}`:entry.status==='pending'?'Awaiting provider response':'Raw provider response unavailable';
+  $('#inspector-response-trace-label').textContent=trace?'Output JSON':entry.status==='pending'?'Output JSON · awaiting response':'Output JSON · unavailable';
   const metadata=[];
   if(response?.model)metadata.push(response.model);
   if(Number.isFinite(response?.latencyMs))metadata.push(`${Math.round(response.latencyMs)} ms provider round trip`);
@@ -158,8 +158,6 @@ function renderResponse(entry) {
     }
     if(!native)root.append(element('p','inspector-response-note','This response does not provide native choice confidence or probabilities.'));
   } else root.append(element('p','inspector-response-note',entry.status==='pending'?'The model’s answer will appear here when this request returns.':'No adapter-normalized answers were returned for this step.'));
-  if($('#inspector-response-trace').open)renderResponseJSON();
-  else {$('#inspector-response-json').textContent='';$('#inspector-response-json-note').textContent='';}
 }
 
 function renderJSON() {
@@ -175,6 +173,7 @@ function renderJSON() {
   if(preview.length>100_000){preview=preview.slice(0,100_000)+'\n… [on-screen preview truncated]';abbreviated=true;}
   $('#inspector-json').textContent=preview;
   $('#inspector-json-note').textContent=abbreviated?'This on-screen preview abbreviates image data or long content. Copy and Download JSON preserve the complete body.':'The JSON below is complete.';
+  renderResponseJSON();
 }
 
 function renderSelected() {
@@ -185,7 +184,7 @@ function renderSelected() {
   $('#inspector-meta').textContent=`${currentRecord.experimentName || currentRecord.kind} · run ${currentRecord.round} · ${currentRecord.mode==='vision'?'Image + task':'Text state'} · ${model}`;
   $('#inspector-request-status').textContent=`${statusLabel(entry)}${entry.error?` · ${entry.error}`:''}`;
   $('#inspector-notice').textContent=entry.submittedRequest?
-    'Frozen input for this step. The exact provider JSON below shows the adapter’s submitted body. New steps stay in the step menu; this view stays here.':
+    'Frozen input for this step. The exact provider JSON at the end shows the submitted input and returned output. New steps stay in the step menu; this view stays here.':
     entry.status==='pending'?'This request is in flight. The browser input is captured below; a provider trace will appear if the server returns one. New steps will not change this selection.':
     'No provider trace was returned. This view preserves the browser input to the adapter; it cannot verify the final body sent to the model.';
   $('#inspector-trace-label').textContent=entry.submittedRequest?`Exact provider JSON · ${entry.submittedRequest.transport || 'native request'}`:'Browser API input · provider trace unavailable';
@@ -197,7 +196,7 @@ function renderSelected() {
   renderObservation(entry.browserInput.state);
   renderQuestions(entry.browserInput.questions);
   if($('#inspector-trace').open)renderJSON();
-  else {$('#inspector-json').textContent='';$('#inspector-json-note').textContent='';}
+  else {$('#inspector-json').textContent='';$('#inspector-json-note').textContent='';$('#inspector-response-json').textContent='';$('#inspector-response-json-note').textContent='';}
 }
 
 function updateSteps() {
@@ -216,7 +215,7 @@ function initialize() {
   dialog=element('dialog','request-inspector');dialog.id='request-inspector';
   dialog.setAttribute('aria-labelledby','inspector-title');dialog.setAttribute('aria-describedby','inspector-notice');
   // This template is static; all request/model content is inserted with textContent.
-  dialog.innerHTML=`<div class="inspector-header"><div><div class="inspector-eyebrow">MODEL REQUEST & RESPONSE</div><h2 id="inspector-title"></h2><p class="inspector-meta" id="inspector-meta"></p></div><button class="button quiet" id="inspector-close" aria-label="Close request and response inspector" autofocus>✕ Close</button></div><div class="inspector-toolbar"><label for="inspector-step">Request step</label><select id="inspector-step"></select><button class="button quiet" id="inspector-copy">Copy request</button><button class="button quiet" id="inspector-download">Download request</button></div><p class="inspector-notice" id="inspector-notice"></p><p class="inspector-request-status" id="inspector-request-status"></p><section class="inspector-response" id="inspector-response" aria-labelledby="inspector-response-title"><div class="inspector-response-heading"><h3 id="inspector-response-title">Model response</h3><div class="inspector-response-actions"><button class="button quiet" id="inspector-copy-response" disabled>Copy response</button><button class="button quiet" id="inspector-download-response" disabled>Download response</button></div></div><p id="inspector-response-status"></p><p id="inspector-response-meta"></p><div id="inspector-response-answers"></div><details id="inspector-response-trace"><summary id="inspector-response-trace-label">Raw provider response JSON</summary><p id="inspector-response-json-note"></p><pre class="inspector-json" id="inspector-response-json"></pre></details></section><div class="inspector-columns"><section class="inspector-section"><h3>Captured observation</h3><div id="inspector-observation"></div></section><section class="inspector-section"><h3>Instructions & allowed choices</h3><div id="inspector-questions"></div></section></div><details id="inspector-trace"><summary id="inspector-trace-label">Exact provider JSON</summary><p id="inspector-json-note"></p><pre class="inspector-json" id="inspector-json"></pre></details><p class="inspector-status" id="inspector-status" role="status" aria-live="polite"></p>`;
+  dialog.innerHTML=`<div class="inspector-header"><div><div class="inspector-eyebrow">MODEL REQUEST & RESPONSE</div><h2 id="inspector-title"></h2><p class="inspector-meta" id="inspector-meta"></p></div><button class="button quiet" id="inspector-close" aria-label="Close request and response inspector" autofocus>✕ Close</button></div><div class="inspector-toolbar"><label for="inspector-step">Request step</label><select id="inspector-step"></select><button class="button quiet" id="inspector-copy">Copy request</button><button class="button quiet" id="inspector-download">Download request</button></div><p class="inspector-notice" id="inspector-notice"></p><p class="inspector-request-status" id="inspector-request-status"></p><div class="inspector-columns"><section class="inspector-section"><h3>Captured observation</h3><div id="inspector-observation"></div></section><section class="inspector-section"><h3>Instructions & allowed choices</h3><div id="inspector-questions"></div></section></div><section class="inspector-response" id="inspector-response" aria-labelledby="inspector-response-title"><div class="inspector-response-heading"><h3 id="inspector-response-title">Model response</h3><div class="inspector-response-actions"><button class="button quiet" id="inspector-copy-response" disabled>Copy response</button><button class="button quiet" id="inspector-download-response" disabled>Download response</button></div></div><p id="inspector-response-status"></p><p id="inspector-response-meta"></p><div id="inspector-response-answers"></div></section><details id="inspector-trace"><summary id="inspector-trace-label">Exact provider JSON</summary><h4 class="inspector-json-heading">Input JSON</h4><p id="inspector-json-note"></p><pre class="inspector-json" id="inspector-json"></pre><h4 class="inspector-json-heading" id="inspector-response-trace-label">Output JSON</h4><p id="inspector-response-json-note"></p><pre class="inspector-json" id="inspector-response-json"></pre></details><p class="inspector-status" id="inspector-status" role="status" aria-live="polite"></p>`;
   document.body.append(dialog);
   $('#inspector-close').onclick=()=>dialog.close();
   dialog.addEventListener('close',()=>{
@@ -226,7 +225,6 @@ function initialize() {
   });
   $('#inspector-step').onchange=()=>{currentStep=Number($('#inspector-step').value);renderSelected();};
   $('#inspector-trace').addEventListener('toggle',()=>{if($('#inspector-trace').open)renderJSON();});
-  $('#inspector-response-trace').addEventListener('toggle',()=>{if($('#inspector-response-trace').open)renderResponseJSON();});
   $('#inspector-copy').onclick=async()=>{
     const text=JSON.stringify(selectedPayload(),null,2);
     try {
