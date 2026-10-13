@@ -25,18 +25,24 @@ class RequestInspectorHttpTests(unittest.TestCase):
         return handler.send
 
     def test_boolean_opt_in_is_forwarded_and_defaults_off(self):
-        for fields, expected in (({}, False), ({'includeRequest': False}, False), ({'includeRequest': True}, True)):
+        for fields, request, response in (({}, False, False),
+                                         ({'includeRequest': False, 'includeResponse': False}, False, False),
+                                         ({'includeRequest': True}, True, False),
+                                         ({'includeResponse': True}, False, True),
+                                         ({'includeRequest': True, 'includeResponse': True}, True, True)):
             with self.subTest(fields=fields), patch.object(http, 'execute_decision', return_value={'answers': {}}) as execute:
                 send = self.request(dict(provider='jev', state='red', questions={}, **fields))
-                self.assertEqual(execute.call_args.kwargs['include_request'], expected)
+                self.assertEqual(execute.call_args.kwargs['include_request'], request)
+                self.assertEqual(execute.call_args.kwargs['include_response'], response)
                 send.assert_called_once_with(200, {'answers': {}})
 
     def test_nonboolean_opt_in_is_rejected_before_inference(self):
-        for value in (None, 0, 1, 'true', [], {}):
-            with self.subTest(value=value), patch.object(http, 'execute_decision') as execute:
-                send = self.request({'includeRequest': value})
-                send.assert_called_once_with(400, {'error': 'includeRequest must be a boolean.'})
-                execute.assert_not_called()
+        for flag in ('includeRequest', 'includeResponse'):
+            for value in (None, 0, 1, 'true', [], {}):
+                with self.subTest(flag=flag, value=value), patch.object(http, 'execute_decision') as execute:
+                    send = self.request({flag: value})
+                    send.assert_called_once_with(400, {'error': flag + ' must be a boolean.'})
+                    execute.assert_not_called()
 
 
 if __name__ == '__main__':

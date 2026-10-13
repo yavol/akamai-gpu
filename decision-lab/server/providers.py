@@ -1,6 +1,7 @@
 """Server-only decision adapters. Credentials never enter browser responses.
 
-Public API: catalog(), execute_decision(..., timeout=30, include_request=False).
+Public API: catalog(), execute_decision(..., timeout=30,
+                                     include_request=False, include_response=False).
 Transport uses urllib so the managed environment's HTTPS proxy and CA trust apply.
 No retries, model substitutions, local answers, or artificial latency are added.
 """
@@ -262,13 +263,15 @@ def _answers(data: dict, questions: dict, *, chat: bool) -> dict:
     return normalized
 
 
-def execute_decision(provider: str, state: Any, questions: Any, timeout: float = 30, *, include_request: bool = False) -> dict:
+def execute_decision(provider: str, state: Any, questions: Any, timeout: float = 30, *,
+                     include_request: bool = False, include_response: bool = False) -> dict:
     """Choose exactly the requested model and normalize a real response.
 
     The custom GPU endpoint must implement {model,state,questions} -> {answers,...}.
     Configure its complete URL in GPU_DECISIONS_URL and optional GPU_API_KEY.
-    Opt-in submittedRequest contains only the final JSON body, never transport
-    headers, credentials, or endpoint configuration.
+    Independent opt-in submittedRequest and receivedResponse contain the final
+    sent JSON body and decoded provider JSON. Neither adds transport headers,
+    credentials, or endpoint configuration.
     """
     started = time.perf_counter()
     if not isinstance(provider, str) or provider not in {*_MODELS, "gpu"}:
@@ -277,6 +280,8 @@ def execute_decision(provider: str, state: Any, questions: Any, timeout: float =
         _invalid("timeout must be between 1 and 90 seconds")
     if not isinstance(include_request, bool):
         _invalid("includeRequest must be a boolean")
+    if not isinstance(include_response, bool):
+        _invalid("includeResponse must be a boolean")
     clean_questions = _questions(questions)
     clean_state = _state(state)
     if provider == "jev" and isinstance(clean_state, list) and any(isinstance(x, dict) for x in clean_state):
@@ -327,4 +332,8 @@ def execute_decision(provider: str, state: Any, questions: Any, timeout: float =
         # This is the same final object serialized by _post_json, after every
         # provider-specific transformation. Attach it outside the latency window.
         result["submittedRequest"] = {"transport": kind, "body": payload}
+    if include_response:
+        # _answers reads data without changing it. Keep the decoded upstream
+        # object intact, including provider metadata, outside the latency window.
+        result["receivedResponse"] = {"transport": kind, "body": data}
     return result

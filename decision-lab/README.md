@@ -42,11 +42,13 @@ Jev cannot be selected for image observations. Clef and Luna receive a canvas-re
 
 Clef is pinned to Cloudflare with `allow_fallbacks: false`: an initial routing probe through PrimeIntellect misclassified a simple color image. See `evidence/provider-probes.json` for final successful probes. No model provider is silently changed on failure.
 
-## Inspect model requests
+## Inspect model requests and responses
 
-After starting a run, click **Inspect request** below a model or **Inspect N requests** in a saved result. The **Request step** menu selects a frozen observation: its image or text, task instructions, and allowed choices. Later actions do not change the selected snapshot, and saved requests remain available after resetting or switching demos within the same page session.
+After starting a run, click **Inspect request & response** below a model or **Inspect N steps** in a saved result. The **Request step** menu selects a frozen observation and its response. Later actions do not change the selected step, and saved snapshots remain available after resetting or switching demos within the same page session.
 
-Expand **Exact provider JSON** to see the server's submitted body, including provider-specific transformations such as GPU `images` or Luna messages and JSON schema. **Copy provider request** and **Download provider request** preserve the complete body; the on-screen preview abbreviates image data and long content. If a request is pending, fails, or the server returns no trace, the inspector clearly labels the captured browser input instead of claiming it is the final provider body. Server credentials, authorization headers, and private endpoint URLs are excluded. Inspector capture adds no inference request.
+**Model response** shows the adapter-normalized choices, model, request latency, and usage. Native confidence and choice probabilities appear only when returned; Luna chat has none. Expand **Raw provider response JSON** to see the complete parsed upstream JSON, including provider metadata, before answer normalization. **Copy response** and **Download response** preserve that body. Pending, failed, and missing-trace states are explicit; response copying is disabled when no raw trace is available. A response received after **Stop** remains inspectable and is marked as not applied to the demo.
+
+Below the response are the captured image or text, task instructions, and allowed choices. Expand **Exact provider JSON** to see the submitted request body, including provider-specific transformations such as GPU `images` or Luna messages and JSON schema. **Copy provider request** and **Download provider request** preserve the complete body; the on-screen previews shorten image data or long content. When no request trace is returned, the inspector labels the captured browser input instead. The adapter never adds server credentials, authorization headers, or private endpoint configuration to either trace. Inspector capture adds no inference request and occurs outside the measured provider latency window.
 
 ## Configure self-hosted GPU inference
 
@@ -99,7 +101,7 @@ node scripts/benchmark_freeze.cjs
 python scripts/benchmark_providers.py
 QA_LIVE=1 node scripts/browser-test.cjs
 QA_LIVE=1 QA_VISION=1 QA_ONLY=vision node scripts/browser-test.cjs
-# Inspector behavior: synthetic responses only; no inference calls.
+# Request/response inspector behavior: synthetic responses only; no inference calls.
 QA_OUTPUT=/tmp/decision-lab-inspector-mocked node scripts/inspector-browser-test.cjs
 # Inspector integration: three real decisions on a configured app.
 APP_URL=http://127.0.0.1:8080/ QA_OUTPUT=/tmp/decision-lab-inspector-live node scripts/inspector-browser-test.cjs --live
@@ -107,11 +109,11 @@ APP_URL=http://127.0.0.1:8080/ QA_OUTPUT=/tmp/decision-lab-inspector-live node s
 
 Browser scripts use a local `playwright` package when installed, with an optional `PLAYWRIGHT_MODULE` override and a managed-workspace fallback. Set `CHROMIUM_PATH` to use a particular browser; otherwise they use an available system Chromium or Playwright's installed browser. Set `APP_URL` (or `QA_URL`) to the app directory URL, including its trailing slash, to test a deployment under a path prefix. The original `browser-test.cjs` and `browser-final.cjs` suites reproduce the saved OpenRouter checks; their model assumptions are not suitable for a GPU-only catalog.
 
-The inspector's `--live` check sends one JEV text, one Luna text, and one GPU image decision, then blocks subsequent workflow requests. It validates request capture rather than full task accuracy or performance. Keep its request snapshots and screenshots in a private `QA_OUTPUT` directory outside the repository.
+The inspector's default checks exercise request and response snapshots, native confidence versus chat answers, pending/error states, responses received after Stop, and exact JSON downloads using synthetic responses. Its `--live` check sends one JEV text, one Luna text, and one GPU image decision, then blocks subsequent workflow requests. It validates request/response capture rather than full task accuracy or performance. Keep its snapshots and screenshots in a private `QA_OUTPUT` directory outside the repository.
 
 `evidence/benchmark.json` holds final same-observation comparisons; `evidence/frozen-observations.json` holds their source tasks and scoring labels. Scoring labels never enter the model requests. `evidence/browser-qa-*.json`, browser exports, and screenshots record actual browser tests. Initial results are preserved separately from clarified-prompt results. The test fixtures are small and synthetic; results are illustrative rather than broad model rankings.
 
-The UI's **Export JSON** action saves the current session's request snapshots, returned provider bodies, answers, accuracy, timings, model identity, and methodology. This now includes full observation image data when image mode was used; server credentials and private endpoint URLs remain excluded. Inspector snapshots contain only model inputs; scoring labels remain separate in the applied-call results and are never sent to providers.
+The UI's **Export JSON** action saves the current session's frozen request and response snapshots, normalized answers, accuracy, timings, model identity, and methodology. Each `requests` entry retains its `submittedRequest`, `receivedResponse`, and `normalizedResponse` when available, including responses received after Stop; only applied decisions enter `calls`. Exports include full observation image data and complete upstream JSON bodies. The adapter never adds server credentials, authorization headers, or private endpoint configuration. Scoring labels remain separate in the applied-call results and are never sent to providers.
 
 ### Saved OpenRouter results — October 12, 2026
 

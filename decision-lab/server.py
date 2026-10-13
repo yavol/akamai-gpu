@@ -128,11 +128,14 @@ class Handler(BaseHTTPRequestHandler):
             include_request = payload.get('includeRequest', False)
             if not isinstance(include_request, bool):
                 raise ValueError('includeRequest must be a boolean.')
+            include_response = payload.get('includeResponse', False)
+            if not isinstance(include_response, bool):
+                raise ValueError('includeResponse must be a boolean.')
             if not LIMIT.acquire(blocking=False):
                 return self.send(429, {'error': 'All six inference slots are in use. Try again shortly.'})
             try:
                 result = execute_decision(payload.get('provider', 'clef'), payload.get('state'), payload.get('questions'),
-                                          timeout=40, include_request=include_request)
+                                          timeout=40, include_request=include_request, include_response=include_response)
                 return self.send(200, result)
             finally:
                 LIMIT.release()

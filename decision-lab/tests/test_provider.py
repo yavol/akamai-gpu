@@ -43,6 +43,7 @@ class ProviderTests(unittest.TestCase):
         self.assertNotIn("unit-secret", json.dumps(result))
         self.assertFalse(result["timing"]["cachedLocally"])
         self.assertNotIn("submittedRequest", result)
+        self.assertNotIn("receivedResponse", result)
 
     @patch("server.providers.urllib.request.build_opener")
     def test_submitted_request_matches_actual_serialized_body_for_each_transport(self, opener):
@@ -59,6 +60,7 @@ class ProviderTests(unittest.TestCase):
                 opener.reset_mock()
                 opener.return_value.open.return_value.__enter__.return_value.read.return_value = json.dumps(upstream).encode()
                 result = execute_decision(provider, state, QUESTIONS, include_request=True)
+                self.assertNotIn("receivedResponse", result)
                 request = opener.return_value.open.call_args.args[0]
                 submitted = result["submittedRequest"]
                 self.assertEqual(set(submitted), {"transport", "body"})
@@ -82,12 +84,64 @@ class ProviderTests(unittest.TestCase):
                     self.assertEqual(submitted["body"]["questions"], QUESTIONS)
                 self.assertEqual(opener.return_value.open.call_count, 1)
 
+    @patch("server.providers.urllib.request.build_opener")
+    def test_received_response_matches_decoded_upstream_json_for_each_transport(self, opener):
+        os.environ.update({"GPU_DECISIONS_URL": "http://private-gpu-service:8000/v1/systemone",
+                           "GPU_API_KEY": "gpu-unit-secret"})
+        chat_response = {"id": "chat-1", "choices": [{"finish_reason": "stop", "message": {
+            "role": "assistant", "content": '{"answers":{"color":"red"}}'}}],
+            "usage": {"prompt_tokens": 132, "completion_tokens": 8}}
+        for provider, state, upstream, transport in (
+            ("jev", "Read the red label — text only", RESULT, "decisions"),
+            ("clef", IMAGE_STATE, RESULT, "decisions"),
+            ("gpu", IMAGE_STATE, SGLANG_RESULT, "decisions"),
+            ("luna", IMAGE_STATE, chat_response, "chat"),
+        ):
+            with self.subTest(provider=provider):
+                opener.reset_mock()
+                # Additional provider metadata must survive without adapter edits.
+                upstream_bytes = json.dumps(dict(upstream, provider_details={"flags": [True, None], "revision": "test-α"})).encode()
+                opener.return_value.open.return_value.__enter__.return_value.read.return_value = upstream_bytes
+                result = execute_decision(provider, state, QUESTIONS, include_response=True)
+                self.assertNotIn("submittedRequest", result)
+                received = result["receivedResponse"]
+                self.assertEqual(set(received), {"transport", "body"})
+                self.assertEqual(received["transport"], transport)
+                self.assertEqual(received["body"], json.loads(upstream_bytes))
+                self.assertEqual(result["answers"]["color"]["choice"], "red")
+                if provider == "luna":
+                    self.assertIsNone(result["answers"]["color"]["confidence"])
+                    self.assertEqual(received["body"]["choices"][0]["message"]["content"], '{"answers":{"color":"red"}}')
+                elif provider == "gpu":
+                    self.assertEqual(received["body"]["answers"], SGLANG_RESULT["answers"])
+                request = opener.return_value.open.call_args.args[0]
+                for private in ("unit-secret", "gpu-unit-secret", "private-gpu-service", request.full_url):
+                    self.assertNotIn(private, json.dumps(result))
+                self.assertNotIn("includeResponse", json.loads(request.data))
+                self.assertEqual(opener.return_value.open.call_count, 1)
+
+    @patch("server.providers._post_json", return_value=(RESULT, TIMING.copy()))
+    def test_request_and_response_capture_can_be_enabled_together(self, post):
+        result = execute_decision("jev", "red", QUESTIONS, include_request=True, include_response=True)
+        self.assertEqual(result["submittedRequest"]["body"], post.call_args.args[1])
+        self.assertEqual(result["receivedResponse"]["body"], RESULT)
+
+    @patch("server.providers.urllib.request.build_opener")
+    def test_response_capture_does_not_expose_invalid_upstream_body(self, opener):
+        invalid = {"answers": {"color": {"choice": "invalid"}}, "debug": "private-invalid-response-marker"}
+        opener.return_value.open.return_value.__enter__.return_value.read.return_value = json.dumps(invalid).encode()
+        with self.assertRaises(ProviderError) as error:
+            execute_decision("jev", "red", QUESTIONS, include_response=True)
+        self.assertEqual(error.exception.code, "invalid_response")
+        self.assertNotIn("private-invalid-response-marker", json.dumps(error.exception.as_dict()))
+
     @patch("server.providers._post_json")
     def test_request_capture_requires_a_boolean_before_network(self, post):
-        for value in (None, 0, 1, "true", [], {}):
-            with self.subTest(value=value), self.assertRaises(ProviderError) as error:
-                execute_decision("jev", "red", QUESTIONS, include_request=value)
-            self.assertEqual(error.exception.status, 400)
+        for name in ("include_request", "include_response"):
+            for value in (None, 0, 1, "true", [], {}):
+                with self.subTest(flag=name, value=value), self.assertRaises(ProviderError) as error:
+                    execute_decision("jev", "red", QUESTIONS, **{name: value})
+                self.assertEqual(error.exception.status, 400)
         post.assert_not_called()
 
     @patch("server.providers._post_json", return_value=(RESULT, TIMING.copy()))
